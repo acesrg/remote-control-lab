@@ -1,0 +1,24 @@
+variables:
+  CI_ESP_AEROPENDULUM_DIR: aeropendulum/esp
+  WORK_PATH: /home/esp/esp-open-rtos/examples/project
+  FIRMWARE_BIN_DIR: firmware
+  WIFI_VARS_PATH: include/private_ssid_config.h
+
+stages:
+  - build
+
+build-fw:
+  stage: build
+  before_script:
+    - cd $WORK_PATH
+    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
+    - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
+  script:
+    - make
+    - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/image.bin
+  tags:
+    - brasov-fw-burn
+  artifacts:
+    paths:
+    - $CI_PROJECT_DIR/image.bin
+    expire_in: 1 week
