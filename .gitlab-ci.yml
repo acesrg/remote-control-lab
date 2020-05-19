@@ -6,6 +6,7 @@ variables:
 
 stages:
   - build
+  - burn
 
 build-fw:
   stage: build
@@ -22,3 +23,15 @@ build-fw:
     paths:
     - $CI_PROJECT_DIR/image.bin
     expire_in: 1 week
+
+flash-fw:
+  stage: burn
+  before_script:
+    - cd $WORK_PATH
+    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
+  script:
+    - make flash_after_build
+  tags:
+    - brasov-fw-burn
+  dependencies:
+    - build-fw

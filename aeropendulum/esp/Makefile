@@ -12,3 +12,9 @@ include ../../common.mk
 html:
 	@echo "Generating fsdata.."
 	cd fsdata && ./makefsdata
+
+flash_after_build:
+	$(if will_flash, $(call will_flash, "flash"))
+	$(ESPTOOL) -p $(ESPPORT) --baud $(ESPBAUD) write_flash $(ESPTOOL_ARGS) \
+		$(RBOOT_ARGS) 0x2000 $(CI_PROJECT_DIR)/*.bin $(SPIFFS_ESPTOOL_ARGS)
+	$(if did_flash, $(call did_flash, "flash"))
