@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker run --rm -it --privileged -e "ESPBAUD=460800" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
