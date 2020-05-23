@@ -10,9 +10,9 @@ This repo contains the firmware for the dynamic systems, providing:
 - The communication with the sensors and actuators (read and write, respectively).
 - An `http` server, to set and get the formerly mentioned data.
 
-## Build :nut_and_bolt:, burn :fire:, replicate :factory: and further herbs :herb::
+## Build :nut_and_bolt:, burn :fire:, replicate :factory: and further herbs :herb:
 ### esp8266
-#### Docker approach :whale::
+#### Docker approach :whale:
 Easiest of them all, its requirements are:
 - docker
 
@@ -32,12 +32,19 @@ in the following command, make sure not to copy and paste (i know i would), but 
 
 without flash support:
 ```bash
-docker run --rm -it -e "ESPBAUD=115200" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
+docker run --rm -it -e "ESPBAUD=460800" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
 ```
 with flash support:
 ```bash
-docker run --rm -it --privileged -e "ESPBAUD=115200" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
+docker run --rm -it --privileged -e "ESPBAUD=460800" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
 ```
+
+*NOTE: you can also run:
+```bash
+../../tools/dockeride
+```
+just remember to change the WIFI parameters in the bash script.
+
 4. run the environment-variable-replacing hackity-hack, this will replace the former inserted wifi data into the ssid config file
 ```bash
 envsubst < include/private_ssid_config.h | sponge include/private_ssid_config.h
@@ -52,7 +59,7 @@ to flash
 make flash
 ```
 
-#### The i-want-all-the-toolchains approach :tired_face::
+#### The i-want-all-the-toolchains approach :tired_face:
 
 1. Follow [esp-open-rtos](https://github.com/SuperHouse/esp-open-rtos) instructions to clone and compile.
 
