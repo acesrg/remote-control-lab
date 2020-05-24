@@ -1,8 +1,3 @@
-/*
- * HTTP server example.
- *
- * This sample code is in the public domain.
- */
 #include <espressif/esp_common.h>
 #include <esp8266.h>
 #include <esp/uart.h>
@@ -14,64 +9,6 @@
 #include <httpd/httpd.h>
 
 #define LED_PIN 2
-
-enum {
-    SSI_UPTIME,
-    SSI_FREE_HEAP,
-    SSI_LED_STATE
-};
-
-int32_t ssi_handler(int32_t iIndex, char *pcInsert, int32_t iInsertLen)
-{
-    switch (iIndex) {
-        case SSI_UPTIME:
-            snprintf(pcInsert, iInsertLen, "%d",
-                    xTaskGetTickCount() * portTICK_PERIOD_MS / 1000);
-            break;
-        case SSI_FREE_HEAP:
-            snprintf(pcInsert, iInsertLen, "%d", (int) xPortGetFreeHeapSize());
-            break;
-        case SSI_LED_STATE:
-            snprintf(pcInsert, iInsertLen, (GPIO.OUT & BIT(LED_PIN)) ? "Off" : "On");
-            break;
-        default:
-            snprintf(pcInsert, iInsertLen, "N/A");
-            break;
-    }
-
-    /* Tell the server how many characters to insert */
-    return (strlen(pcInsert));
-}
-
-const char *gpio_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
-    for (int i = 0; i < iNumParams; i++) {
-        if (strcmp(pcParam[i], "on") == 0) {
-            uint8_t gpio_num = atoi(pcValue[i]);
-            gpio_enable(gpio_num, GPIO_OUTPUT);
-            gpio_write(gpio_num, true);
-        } else if (strcmp(pcParam[i], "off") == 0) {
-            uint8_t gpio_num = atoi(pcValue[i]);
-            gpio_enable(gpio_num, GPIO_OUTPUT);
-            gpio_write(gpio_num, false);
-        } else if (strcmp(pcParam[i], "toggle") == 0) {
-            uint8_t gpio_num = atoi(pcValue[i]);
-            gpio_enable(gpio_num, GPIO_OUTPUT);
-            gpio_toggle(gpio_num);
-        }
-    }
-    return "/index.ssi";
-}
-
-const char *about_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
-    return "/about.html";
-}
-
-const char *websocket_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
-{
-    return "/websockets.html";
-}
 
 void websocket_task(void *pvParameter)
 {
@@ -155,22 +92,7 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
 
 void httpd_task(void *pvParameters)
 {
-    tCGI pCGIs[] = {
-        {"/gpio", (tCGIHandler) gpio_cgi_handler},
-        {"/about", (tCGIHandler) about_cgi_handler},
-        {"/websockets", (tCGIHandler) websocket_cgi_handler},
-    };
-
-    const char *pcConfigSSITags[] = {
-        "uptime", // SSI_UPTIME
-        "heap",   // SSI_FREE_HEAP
-        "led"     // SSI_LED_STATE
-    };
-
     /* register handlers and start the server */
-    http_set_cgi_handlers(pCGIs, sizeof (pCGIs) / sizeof (pCGIs[0]));
-    http_set_ssi_handler((tSSIHandler) ssi_handler, pcConfigSSITags,
-            sizeof (pcConfigSSITags) / sizeof (pcConfigSSITags[0]));
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb,
             (tWsHandler) websocket_cb);
     httpd_init();
@@ -198,5 +120,5 @@ void user_init(void)
     gpio_write(LED_PIN, true);
 
     /* initialize tasks */
-    xTaskCreate(&httpd_task, "HTTP Daemon", 128, NULL, 2, NULL);
+    xTaskCreate(&httpd_task, "HTTP Daemon", 256, NULL, 2, NULL);
 }
