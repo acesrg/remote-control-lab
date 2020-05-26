@@ -1,5 +1,6 @@
 variables:
   CI_ESP_AEROPENDULUM_DIR: aeropendulum/esp
+  CI_AEROPENDULUM_DIR: aeropendulum
   WORK_PATH: /home/esp/esp-open-rtos/examples/project
   FIRMWARE_BIN_DIR: firmware
   WIFI_VARS_PATH: include/private_ssid_config.h
@@ -7,8 +8,9 @@ variables:
 stages:
   - build
   - burn
+  - test
 
-build-fw:
+build-aero:
   stage: build
   before_script:
     - cd $WORK_PATH
@@ -24,7 +26,7 @@ build-fw:
     - $CI_PROJECT_DIR/image.bin
     expire_in: 1 week
 
-flash-fw:
+flash-aero:
   stage: burn
   before_script:
     - cd $WORK_PATH
@@ -34,4 +36,11 @@ flash-fw:
   tags:
     - brasov-fw-burn
   dependencies:
-    - build-fw
+    - build-aero
+
+test-aero:
+  stage: test
+  script:
+    - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
+  tags:
+    - brasov-testing
