@@ -47,34 +47,10 @@ void websocket_task(void *pvParameter)
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode)
 {
-    printf("[websocket_callback]:\n%.*s\n", (int) data_len, (char*) data);
-
-    uint8_t response[2];
-    uint16_t val;
-
-    switch (data[0]) {
-        case 'A': // ADC
-            /* This should be done on a separate thread in 'real' applications */
-            val = sdk_system_adc_read();
-            break;
-        case 'D': // Disable LED
-            gpio_write(LED_PIN, true);
-            val = 0xDEAD;
-            break;
-        case 'E': // Enable LED
-            gpio_write(LED_PIN, false);
-            val = 0xBEEF;
-            break;
-        default:
-            printf("Unknown command\n");
-            val = 0;
-            break;
+    if (!strncmp("ping", (char *) data, data_len)) {
+        uint8_t response[] = "pong";
+        websocket_write(pcb, response, sizeof(response) - 1, WS_TEXT_MODE);
     }
-
-    response[1] = (uint8_t) val;
-    response[0] = val >> 8;
-
-    websocket_write(pcb, response, 2, WS_BIN_MODE);
 }
 
 /**
