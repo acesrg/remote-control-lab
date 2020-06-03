@@ -54,3 +54,4 @@ dkms.conf
 # esp build directories
 */esp/build/
 */esp/firmware/
+*/tests/__pycache__/
