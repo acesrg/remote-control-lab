@@ -9,45 +9,8 @@
 #include <httpd/httpd.h>
 #include <http_server.h>
 
-// this should be some kind of pointer
+// TODO: this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
-
-void classic_controller_task(void *pvParameter)
-{
-    struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
-    uint8_t response[] = "classic control mode";
-    websocket_write(pcb, response, sizeof(response) -1, WS_TEXT_MODE);
-    
-    while(1){
-        // TODO: database read actuator data
-        // TODO: actuator set data
-        
-        
-        // TODO: read sensor data
-        // TODO: database write sensor data
-        vTaskDelay(SYSTEM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
-        
-        if(pcb == NULL || pcb->state != ESTABLISHED){
-            // when task stops mark as undefined
-            URI_TASK = URI_UNDEF;    
-            printf("Disconected, delete task");
-            vTaskDelete(NULL);
-        }
-    }
-
-}
-
-void ping_task(void *pvParameter)
-{
-    struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
-    uint8_t response[] = "pong";
-    websocket_write(pcb, response, sizeof(response) - 1, WS_TEXT_MODE);
-
-    // when task stops mark as undefined
-    URI_TASK = URI_UNDEF;    
-    printf("Disconected, delete task");
-    vTaskDelete(NULL);
-}
 
 /**
  * This function is called when websocket frame is received.
