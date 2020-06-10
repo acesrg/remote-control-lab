@@ -7,37 +7,10 @@
 #include <task.h>
 #include <ssid_config.h>
 #include <httpd/httpd.h>
+#include <http_server.h>
 
-#define LED_PIN 2
-
-void websocket_task(void *pvParameter)
-{
-    struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
-
-    for (;;) {
-        if (pcb == NULL || pcb->state != ESTABLISHED) {
-            printf("Connection closed, deleting task\n");
-            break;
-        }
-
-        int uptime = xTaskGetTickCount() * portTICK_PERIOD_MS / 1000;
-        int heap = (int) xPortGetFreeHeapSize();
-        int led = !gpio_read(LED_PIN);
-
-        /* Generate response in JSON format */
-        char response[64];
-        int len = snprintf(response, sizeof (response),
-                "{\"uptime\" : \"%d\","
-                " \"heap\" : \"%d\","
-                " \"led\" : \"%d\"}", uptime, heap, led);
-        if (len < sizeof (response))
-            websocket_write(pcb, (unsigned char *) response, len, WS_TEXT_MODE);
-
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-    }
-
-    vTaskDelete(NULL);
-}
+// TODO: this should be some kind of pointer
+uint8_t URI_TASK = URI_UNDEF;
 
 /**
  * This function is called when websocket frame is received.
@@ -47,22 +20,36 @@ void websocket_task(void *pvParameter)
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode)
 {
-    if (!strncmp("ping", (char *) data, data_len)) {
-        uint8_t response[] = "pong";
-        websocket_write(pcb, response, sizeof(response) - 1, WS_TEXT_MODE);
+    if (URI_TASK == URI_CLASSIC) {
+        // TODO: write data to fixed pos array
+        
+        // TODO: read sensor data from fixed pos array
+
+        float angle = 0;
+        uint8_t error = 0;
+        char sensor_data[CLASSIC_SENSOR_DB_LEN];
+        int len = snprintf(sensor_data, sizeof(sensor_data),
+                           "{\"angle\" : %f,"
+                           " \"error\" : %u}", angle, error);
+        
+        websocket_write(pcb, (uint8_t *) sensor_data, len, WS_TEXT_MODE);
     }
 }
 
 /**
- * This function is called when new websocket is open and
- * creates a new websocket_task if requested URI equals '/stream'.
+ * This function is called when new websocket is open
  */
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
 {
-    printf("WS URI: %s\n", uri);
-    if (!strcmp(uri, "/stream")) {
-        printf("request for streaming\n");
-        xTaskCreate(&websocket_task, "websocket_task", 256, (void *) pcb, 2, NULL);
+    if (!strcmp(uri, "/classic")) {
+        URI_TASK = URI_CLASSIC;
+        printf("Request for classic control \n");
+        xTaskCreate(&classic_controller_task, "classcic_controller_task", 256, (void *) pcb, 2, NULL);
+    }
+    else if (!strcmp(uri, "/ping")) {
+        URI_TASK = URI_PING;
+        printf("Request for ping \n");
+        xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
     }
 }
 
