@@ -25,7 +25,7 @@ void classic_controller_task(void *pvParameter)
         
         // TODO: read sensor data
         // TODO: database write sensor data
-        vTaskDelay(SYSTEM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
+        vTaskDelay(CLASSIC_SYSTEM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
         
         if(pcb == NULL || pcb->state != ESTABLISHED){
             // when task stops mark as undefined
@@ -34,5 +34,4 @@ void classic_controller_task(void *pvParameter)
             vTaskDelete(NULL);
         }
     }
-
 }

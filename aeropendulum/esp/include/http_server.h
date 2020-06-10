@@ -1,7 +1,12 @@
 
 #define LED_PIN 2
-#define SYSTEM_REFRESH_RATE_ms 20
-#define CLASSIC_SENSOR_DATA_LEN 64 
+
+/*
+ * Classic mode definitions
+ * */
+#define CLASSIC_SENSOR_DB_LEN 64 
+#define CLASSIC_ACTUATOR_DB_LEN 64 
+#define CLASSIC_SYSTEM_REFRESH_RATE_ms 20
 
 enum URI_TASK
 {

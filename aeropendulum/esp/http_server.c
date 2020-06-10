@@ -27,7 +27,7 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
 
         float angle = 0;
         uint8_t error = 0;
-        char sensor_data[CLASSIC_SENSOR_DATA_LEN];
+        char sensor_data[CLASSIC_SENSOR_DB_LEN];
         int len = snprintf(sensor_data, sizeof(sensor_data),
                            "{\"angle\" : %f,"
                            " \"error\" : %u}", angle, error);
