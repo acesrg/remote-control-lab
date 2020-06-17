@@ -1,6 +1,6 @@
 PROGRAM=http_server
 PROGRAM_INC_DIR=./include ./lib/json/inc/ ./tests/inc/
-PROGRAM_SRC_DIR=. ./lib/json/src/ ./tests/src/
+PROGRAM_SRC_DIR=. ./lib/json/src/ ./tests/src/ ./tasks/
 
 EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata
 
