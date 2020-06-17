@@ -8,6 +8,7 @@
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
+#include <testing.h>
 
 // TODO: this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
@@ -34,6 +35,20 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
         
         websocket_write(pcb, (uint8_t *) sensor_data, len, WS_TEXT_MODE);
     }
+    
+    else if (URI_TASK == URI_PARSE_TEST) {
+        printf("received test callback");
+        TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
+        if (rv == TEST_OK){
+            printf("test: everything of from this end \n");
+        }
+        else{
+            printf("test: something went wrong \n");
+        }
+    }
+    else {
+        printf("callback method unrecognized \n");
+    }
 }
 
 /**
@@ -50,6 +65,11 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
         URI_TASK = URI_PING;
         printf("Request for ping \n");
         xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
+    }
+    else if (!strcmp(uri, "/test")) {
+        URI_TASK = URI_PARSE_TEST;
+        printf("Test task \n");
+        xTaskCreate(&test_task, "test_task", 512, (void *) pcb, 2, NULL);
     }
 }
 

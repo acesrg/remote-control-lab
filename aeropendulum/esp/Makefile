@@ -1,4 +1,6 @@
 PROGRAM=http_server
+PROGRAM_INC_DIR=./include ./lib/json/inc/ ./tests/inc/
+PROGRAM_SRC_DIR=. ./lib/json/src/ ./tests/src/
 
 EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata
 
@@ -6,6 +8,7 @@ EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata
 #EXTRA_CFLAGS+=-DLWIP_DEBUG=1 -DHTTPD_DEBUG=LWIP_DBG_ON
 
 EXTRA_COMPONENTS=extras/mbedtls extras/httpd
+EXTRA_COMPONENTS += extras/jsmn
 
 include ../../common.mk
 
