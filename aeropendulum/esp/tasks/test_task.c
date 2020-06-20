@@ -15,6 +15,6 @@ void test_task(void *pvParameter)
 {
     vTaskDelay(TEST_WAIT_TIME_ms / portTICK_PERIOD_MS);
     URI_TASK = URI_UNDEF;
-    printf("Disconected, delete task");
+    log_trace("disconected, delete task");
     vTaskDelete(NULL);
 }

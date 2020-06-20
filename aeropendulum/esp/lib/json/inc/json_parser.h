@@ -1,4 +1,5 @@
 #include "jsmn.h"
+#include "log.h"
 
 #define MAX_ACTUATOR_TOKENS 8
 #define TOKEN_NAME_MAX_LEN  16
