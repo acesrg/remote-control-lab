@@ -4,6 +4,7 @@ variables:
   WORK_PATH: /home/esp/esp-open-rtos/examples/project
   FIRMWARE_BIN_DIR: firmware
   WIFI_VARS_PATH: include/private_ssid_config.h
+  GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - build

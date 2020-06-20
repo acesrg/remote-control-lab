@@ -37,17 +37,17 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
     }
     
     else if (URI_TASK == URI_PARSE_TEST) {
-        printf("received test callback");
+        log_info("received test callback");
         TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
         if (rv == TEST_OK){
-            printf("test: everything of from this end \n");
+            log_info("test: everything of from this end");
         }
         else{
-            printf("test: something went wrong \n");
+            log_error("test: something went wrong");
         }
     }
     else {
-        printf("callback method unrecognized \n");
+        log_error("callback method unrecognized");
     }
 }
 
@@ -58,17 +58,17 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
 {
     if (!strcmp(uri, "/classic")) {
         URI_TASK = URI_CLASSIC;
-        printf("Request for classic control \n");
+        log_info("Request for classic control");
         xTaskCreate(&classic_controller_task, "classcic_controller_task", 256, (void *) pcb, 2, NULL);
     }
     else if (!strcmp(uri, "/ping")) {
         URI_TASK = URI_PING;
-        printf("Request for ping \n");
+        log_info("Request for ping");
         xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
     }
     else if (!strcmp(uri, "/test")) {
         URI_TASK = URI_PARSE_TEST;
-        printf("Test task \n");
+        log_info("Test task");
         xTaskCreate(&test_task, "test_task", 512, (void *) pcb, 2, NULL);
     }
 }
@@ -86,7 +86,7 @@ void httpd_task(void *pvParameters)
 void user_init(void)
 {
     uart_set_baud(0, 115200);
-    printf("SDK version:%s\n", sdk_system_get_sdk_version());
+    log_info("SDK version:%s ", sdk_system_get_sdk_version());
 
     struct sdk_station_config config = {
         .ssid = WIFI_SSID,

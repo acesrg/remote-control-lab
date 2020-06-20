@@ -30,7 +30,7 @@ void classic_controller_task(void *pvParameter)
         if(pcb == NULL || pcb->state != ESTABLISHED){
             // when task stops mark as undefined
             URI_TASK = URI_UNDEF;    
-            printf("Disconected, delete task");
+            log_trace("disconected, delete task");
             vTaskDelete(NULL);
         }
     }

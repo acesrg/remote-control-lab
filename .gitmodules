@@ -1,0 +1,3 @@
+[submodule "aeropendulum/esp/lib/log.c"]
+	path = aeropendulum/esp/lib/log.c
+	url = https://github.com/MarcoMiretti/log.c.git 

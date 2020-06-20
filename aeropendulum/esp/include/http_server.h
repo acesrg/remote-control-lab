@@ -1,3 +1,5 @@
+#include <log.h>
+
 
 #define LED_PIN 2
 

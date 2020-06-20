@@ -17,7 +17,7 @@ DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *t
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
 
     if (token->type != JSMN_PRIMITIVE){
-        printf("detokenize_string: expected primitive type token\n");
+        log_error("detokenize_string: expected primitive type token");
         return DETOKENIZE_ERROR;
     }
 
@@ -56,13 +56,13 @@ ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data
     jsmn_init(&p);
     r = jsmn_parse(&p, json_string, strlen(json_string), t, sizeof(t)/sizeof(t[0]));
     if (r < 0) {
-        printf("Failed to parse JSON: %d\n", r);
+        log_error("jsmn_parse: failed to parse JSON: %d", r);
         return PARSE_ERROR;
     }
    
     /* Assume the top-level element is an object */
     if (r < 1 || t[0].type != JSMN_OBJECT) {
-        printf("Object expected\n");
+        log_error("quick_get_value: object expected");
     }
 
     for(int i = 0; i < r; i++){
