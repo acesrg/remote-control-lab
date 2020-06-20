@@ -16,8 +16,10 @@ void classic_controller_task(void *pvParameter)
 {
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
     uint8_t response[] = "classic control mode";
+    LOCK_TCPIP_CORE();
     websocket_write(pcb, response, sizeof(response) -1, WS_TEXT_MODE);
-    
+    UNLOCK_TCPIP_CORE();
+
     while(1){
         // TODO: database read actuator data
         // TODO: actuator set data

@@ -16,7 +16,9 @@ void ping_task(void *pvParameter)
 {
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
     uint8_t response[] = "pong";
+    LOCK_TCPIP_CORE();
     websocket_write(pcb, response, sizeof(response) - 1, WS_TEXT_MODE);
+    UNLOCK_TCPIP_CORE();
 
     // when task stops mark as undefined
     URI_TASK = URI_UNDEF;    
