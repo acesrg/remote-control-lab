@@ -12,10 +12,6 @@ EXTRA_COMPONENTS += extras/jsmn
 
 include ../../common.mk
 
-html:
-	@echo "Generating fsdata.."
-	cd fsdata && ./makefsdata
-
 flash_after_build:
 	$(if will_flash, $(call will_flash, "flash"))
 	$(ESPTOOL) -p $(ESPPORT) --baud $(ESPBAUD) write_flash $(ESPTOOL_ARGS) \
