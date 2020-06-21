@@ -21,19 +21,19 @@ SimpleJSONType sensor_db[2] = {{"angle", 0},
                                {"error", 0}};
 
 void classic_controller_task(void *pvParameter){
+    log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
-    uint8_t response[] = "classic control mode";
-    LOCK_TCPIP_CORE();
-    websocket_write(pcb, response, sizeof(response) -1, WS_TEXT_MODE);
-    UNLOCK_TCPIP_CORE();
-
+    
     while(1){
-        // TODO: database read actuator data
+        float actuator_duty_value = actuator_db[0].value;
         // TODO: actuator set data
-        
-        
+
+
         // TODO: read sensor data
-        // TODO: database write sensor data
+        float sensor_angle_value, sensor_error;
+        sensor_db[0].value = sensor_angle_value;
+        sensor_db[1].value = sensor_error;
+        
         vTaskDelay(CLASSIC_SYSTEM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
         
         if(pcb == NULL || pcb->state != ESTABLISHED){

@@ -75,8 +75,9 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
     else if (!strcmp(uri, "/test")) {
         URI_TASK = URI_PARSE_TEST;
         log_info("Test task");
-        xTaskCreate(&test_task, "test_task", 512, (void *) pcb, 2, NULL);
+        xTaskCreate(&test_task, "test_task", 256, (void *) pcb, 2, NULL);
     }
+    log_trace("task %s created", uri);
 }
 
 void httpd_task(void *pvParameters)
