@@ -5,6 +5,7 @@
 #define TOKEN_NAME_MAX_LEN  16
 #define TOKEN_FLOAT_MAX_LEN 16
 #define JSON_ACTUATOR_MAX_LEN   64
+#define JSON_SENSOR_MAX_LEN   64
 
 typedef enum DetokenizeRvType {
     DETOKENIZE_OK,

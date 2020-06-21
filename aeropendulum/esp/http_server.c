@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <semphr.h>
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
@@ -15,6 +16,12 @@
 
 // TODO: this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
+
+/*
+ * Define the mutexes for both data structures
+ * */
+SemaphoreHandle_t xMutex_actuator_data;
+SemaphoreHandle_t xMutex_sensor_data;
 
 /**
  * This function is called when websocket frame is received.
@@ -74,6 +81,10 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
 
 void httpd_task(void *pvParameters)
 {
+    /* initialize mutexes for database interaction */
+    xMutex_actuator_data = xSemaphoreCreateMutex();
+    xMutex_sensor_data = xSemaphoreCreateMutex();
+
     /* register handlers and start the server */
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb,
             (tWsHandler) websocket_cb);

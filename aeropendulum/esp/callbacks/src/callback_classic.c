@@ -4,20 +4,22 @@
 #include <json_parser.h>
 #include <callback_classic.h>
 #include <http_server.h>
+#include <classic_controller.h>
+
+
+extern SimpleJSONType actuator_db[1];
+extern SimpleJSONType sensor_db[2];
+
 
 CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode){
     // TODO: write data to fixed pos array
-    
+     
     // TODO: read sensor data from fixed pos array
 
-    float angle = 0;
-    uint8_t error = 0;
-    char sensor_data[CLASSIC_SENSOR_DB_LEN];
-    int len = snprintf(sensor_data, sizeof(sensor_data),
-                       "{\"angle\" : %f,"
-                       " \"error\" : %u}", angle, error);
-    
-    websocket_write(pcb, (uint8_t *) sensor_data, len, WS_TEXT_MODE);
+    char composed_json[JSON_SENSOR_MAX_LEN];
+    size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
+    json_simple_compose(composed_json, sensor_db, database_size);
+    websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
     
     return CALLBACK_OK;
 }

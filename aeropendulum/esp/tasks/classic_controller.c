@@ -8,12 +8,19 @@
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
+#include <classic_controller.h>
+#include <json_parser.h>
 
 // TODO: ugh such an ugly global
 extern uint8_t URI_TASK;
 
-void classic_controller_task(void *pvParameter)
-{
+
+SimpleJSONType actuator_db[1] = {{"duty", 0}};
+
+SimpleJSONType sensor_db[2] = {{"angle", 0},
+                               {"error", 0}};
+
+void classic_controller_task(void *pvParameter){
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
     uint8_t response[] = "classic control mode";
     LOCK_TCPIP_CORE();

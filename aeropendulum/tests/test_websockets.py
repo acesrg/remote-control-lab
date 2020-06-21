@@ -53,7 +53,7 @@ class WebsocketsTestCase(unittest.TestCase):
         parsed_response = json.loads(response)
 
         self.assertIsInstance(parsed_response['angle'], float)
-        self.assertIsInstance(parsed_response['error'], int)
+        self.assertIsInstance(parsed_response['error'], float)
 
     def test_classic_control_response(self):
         self.loop.run_until_complete(self.a_test_classic_control_response())
