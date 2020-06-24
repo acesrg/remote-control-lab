@@ -12,6 +12,8 @@ class WebsocketsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.loop = asyncio.get_event_loop()
+        self.json_data = {"duty": 3.6}
+        self.message = json.dumps(self.json_data)
 
     async def connect(self, address, uri):
         url = "ws://" + address + "/" + uri
@@ -28,32 +30,18 @@ class WebsocketsTestCase(unittest.TestCase):
     def test_ping(self):
         self.loop.run_until_complete(self.a_test_ping())
 
-    async def a_test_uri(self):
-        uri = "classic"
-        websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-        response = await websocket.recv()
-        await websocket.close()
-        self.assertEqual(response, "classic control mode")
-
-    def test_uri(self):
-        self.loop.run_until_complete(self.a_test_uri())
-
     async def a_test_classic_control_response(self):
         uri = "classic"
-        message = "some"
         websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
 
-        # await for greeting
-        await websocket.recv()
-
         #send to activate callback and receive
-        await websocket.send(message)
+        await websocket.send(self.message)
         response = await websocket.recv()
         await websocket.close()
         parsed_response = json.loads(response)
 
         self.assertIsInstance(parsed_response['angle'], float)
-        self.assertIsInstance(parsed_response['error'], int)
+        self.assertIsInstance(parsed_response['error'], float)
 
     def test_classic_control_response(self):
         self.loop.run_until_complete(self.a_test_classic_control_response())
@@ -61,14 +49,14 @@ class WebsocketsTestCase(unittest.TestCase):
 
     async def a_test_json_parsing(self):
         uri = "test"
-        json_data = {"duty": 3.6}
-        message = json.dumps(json_data)
         websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-        await websocket.send(message)
+        await websocket.send(self.message)
         response = await websocket.recv()
+        await websocket.close()
+
         parsed_response = json.loads(response)
 
-        self.assertEqual(parsed_response, json_data)
+        self.assertEqual(parsed_response, self.json_data)
 
     def test_json_parsing(self):
         self.loop.run_until_complete(self.a_test_json_parsing())

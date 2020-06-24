@@ -5,13 +5,23 @@
 #include <stdio.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <semphr.h>
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
-#include <testing.h>
+
+/* include callbacks */
+#include <callback_test.h>
+#include <callback_classic.h>
 
 // TODO: this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
+
+/*
+ * Define the mutexes for both data structures
+ * */
+SemaphoreHandle_t xMutex_actuator_data;
+SemaphoreHandle_t xMutex_sensor_data;
 
 /**
  * This function is called when websocket frame is received.
@@ -22,18 +32,14 @@ uint8_t URI_TASK = URI_UNDEF;
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode)
 {
     if (URI_TASK == URI_CLASSIC) {
-        // TODO: write data to fixed pos array
-        
-        // TODO: read sensor data from fixed pos array
-
-        float angle = 0;
-        uint8_t error = 0;
-        char sensor_data[CLASSIC_SENSOR_DB_LEN];
-        int len = snprintf(sensor_data, sizeof(sensor_data),
-                           "{\"angle\" : %f,"
-                           " \"error\" : %u}", angle, error);
-        
-        websocket_write(pcb, (uint8_t *) sensor_data, len, WS_TEXT_MODE);
+        log_trace("received classic control callback");
+        CallbackRvType rv = classic_callback_handler(pcb, data, data_len, mode);
+        if (rv == CALLBACK_OK){
+            log_trace("classic control callback handled");
+        }
+        else{
+            log_error("classic control callback exited with error status: %d", rv);
+        }
     }
     
     else if (URI_TASK == URI_PARSE_TEST) {
@@ -69,12 +75,17 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
     else if (!strcmp(uri, "/test")) {
         URI_TASK = URI_PARSE_TEST;
         log_info("Test task");
-        xTaskCreate(&test_task, "test_task", 512, (void *) pcb, 2, NULL);
+        xTaskCreate(&test_task, "test_task", 256, (void *) pcb, 2, NULL);
     }
+    log_trace("task %s created", uri);
 }
 
 void httpd_task(void *pvParameters)
 {
+    /* initialize mutexes for database interaction */
+    xMutex_actuator_data = xSemaphoreCreateMutex();
+    xMutex_sensor_data = xSemaphoreCreateMutex();
+
     /* register handlers and start the server */
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb,
             (tWsHandler) websocket_cb);
