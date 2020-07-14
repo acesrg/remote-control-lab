@@ -24,7 +24,7 @@ typedef enum TokenCompareRvType {
 
 typedef struct SimpleJSONType {
     const char name[TOKEN_NAME_MAX_LEN];
-    float value;
+    uint16_t value;
 } SimpleJSONType;
 
 
