@@ -12,6 +12,9 @@ EXTRA_COMPONENTS += extras/jsmn
 
 include ../../common.mk
 
+monitor:
+	$(FILTEROUTPUT) --port $(ESPPORT) --baud 115200 --elf $(PROGRAM_OUT)
+
 flash_after_build:
 	$(if will_flash, $(call will_flash, "flash"))
 	$(ESPTOOL) -p $(ESPPORT) --baud $(ESPBAUD) write_flash $(ESPTOOL_ARGS) \
