@@ -26,13 +26,15 @@ SimpleJSONType sensor_db[2] = {{"angle", 0},
 void classic_controller_task(void *pvParameter){
     log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
-    
+
     while(1){
         if( xMutex_actuator_data != NULL ){
             /* See if we can obtain the actuator_db mutex */
             if( xSemaphoreTake( xMutex_actuator_data, ( TickType_t ) 100 ) == pdTRUE ){
-                float actuator_duty_value = actuator_db[0].value;
-                // TODO: actuator set data
+                uint16_t actuator_duty_value = actuator_db[0].value;
+               
+                log_trace("set actuator duty: 0x%04X");
+                pwm_set_duty(actuator_duty_value);
                 xSemaphoreGive( xMutex_actuator_data );
             }
         }
