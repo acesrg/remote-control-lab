@@ -9,6 +9,7 @@ EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR
 
 EXTRA_COMPONENTS=extras/mbedtls extras/httpd
 EXTRA_COMPONENTS += extras/jsmn
+EXTRA_COMPONENTS += extras/pwm
 
 include ../../common.mk
 
