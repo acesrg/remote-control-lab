@@ -1,8 +1,9 @@
 #include <log.h>
 
-
 #define LED_PIN 2
 
+#define ENCODER_PIN_A 12
+#define ENCODER_PIN_B 13
 
 enum URI_TASK
 {
