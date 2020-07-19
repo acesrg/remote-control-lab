@@ -12,7 +12,13 @@
 #include <classic_controller.h>
 #include <json_parser.h>
 #include <pwm.h>
-#include <propeller_configurations.h>
+
+
+typedef struct PwmConfigType {
+    uint16_t frequency_hz;
+    uint16_t poweron_duty;
+    uint16_t pin;
+} PwmConfigType;
 
 // TODO: ugh such an ugly global
 extern uint8_t URI_TASK;
@@ -20,7 +26,7 @@ extern uint8_t URI_TASK;
 PwmConfigType pwm_config = {
                             DEFAULT_PROPELLER_PWM_FREQUENCY_HZ,
                             DEFAULT_PROPELLER_PWM_POWERON_DUTY,
-                            DEFAULT_PROPELLER_PWM_PIN
+                            PROPELLER_PWM_PIN
                             };
 
 void start_pwm_task(void *pvParameter){
