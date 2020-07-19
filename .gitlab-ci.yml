@@ -7,9 +7,21 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
+  - lint
   - build
   - burn
   - test
+
+code-style:
+  stage: lint
+  before_script:
+    - cd $WORK_PATH
+    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
+    - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
+  script:
+    - make lint
+  tags:
+    - brasov-fw-burn
 
 build-aero:
   stage: build
