@@ -11,7 +11,13 @@ EXTRA_COMPONENTS=extras/mbedtls extras/httpd
 EXTRA_COMPONENTS += extras/jsmn
 EXTRA_COMPONENTS += extras/pwm
 
+LINT_TOOL = cpplint
+LINT_FLAGS = --recursive --quiet
+
 include ../../common.mk
+
+lint:
+	$(LINT_TOOL) $(LINT_FLAGS) *
 
 monitor:
 	$(FILTEROUTPUT) --port $(ESPPORT) --baud 115200 --elf $(PROGRAM_OUT)
