@@ -1,3 +1,21 @@
+/*
+ * Copyright 2020 Marco Miretti.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
 #include <espressif/esp_common.h>
 #include <esp8266.h>
 #include <esp/uart.h>
@@ -20,7 +38,6 @@ typedef struct PwmConfigType {
     uint16_t pin;
 } PwmConfigType;
 
-// TODO: ugh such an ugly global
 extern uint8_t URI_TASK;
 
 PwmConfigType pwm_config = {
@@ -29,8 +46,7 @@ PwmConfigType pwm_config = {
                             PROPELLER_PWM_PIN
                             };
 
-void start_pwm_task(void *pvParameter){
-    
+void start_pwm_task(void *pvParameter) {
     uint8_t pins[1];
     log_trace("task started");
     log_trace("pwm_init(1, [%d])", pwm_config.pin);
@@ -45,8 +61,8 @@ void start_pwm_task(void *pvParameter){
 
     log_trace("pwm_start");
     pwm_start();
-    
-    URI_TASK = URI_UNDEF;    
+
+    URI_TASK = URI_UNDEF;
     log_trace("disconected, delete task");
     vTaskDelete(NULL);
 }

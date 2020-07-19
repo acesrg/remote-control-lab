@@ -1,3 +1,21 @@
+/*
+ * Copyright 2020 Marco Miretti.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
 #include <espressif/esp_common.h>
 #include <esp8266.h>
 #include <string.h>
@@ -12,11 +30,10 @@
  * \argument    token:  a jsmn token that points to that json argument
  * \return      DetokenizeRvType: status code
  */
-DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *token)
-{
+DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
 
-    if (token->type != JSMN_PRIMITIVE){
+    if (token->type != JSMN_PRIMITIVE) {
         log_error("detokenize_string: expected primitive type token");
         return DETOKENIZE_ERROR;
     }
@@ -34,11 +51,10 @@ DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *t
  * \argument    token:  a jsmn token that points to that json argument
  * \return      DetokenizeRvType: status code
  */
-DetokenizeRvType detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token)
-{
+DetokenizeRvType detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
 
-    if (token->type != JSMN_STRING){
+    if (token->type != JSMN_STRING) {
         log_error("detokenize_string: expected string type token");
         return DETOKENIZE_ERROR;
     }
@@ -58,8 +74,7 @@ DetokenizeRvType detokenize_hex(uint16_t *result, const char *input, jsmntok_t *
  *                  TOKEN_MATCHES or
  *                  TOKEN_DIFFERS
  */
-TokenCompareRvType compare_token(const char *input, jsmntok_t *token, const char *expected)
-{
+TokenCompareRvType compare_token(const char *input, jsmntok_t *token, const char *expected) {
     if (token->type == JSMN_STRING && (int)strlen(expected) == token->end - token->start &&
             strncmp(input + token->start, expected, token->end - token->start) == 0) {
         return TOKEN_MATCHES;
@@ -68,8 +83,7 @@ TokenCompareRvType compare_token(const char *input, jsmntok_t *token, const char
 }
 
 
-ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data)
-{
+ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data) {
     jsmn_parser p;
     jsmntok_t t[MAX_ACTUATOR_TOKENS];
     int r;
@@ -80,13 +94,12 @@ ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data
         log_error("jsmn_parse: failed to parse JSON: %d", r);
         return PARSE_ERROR;
     }
-   
     /* Assume the top-level element is an object */
     if (r < 1 || t[0].type != JSMN_OBJECT) {
         log_error("quick_get_value: object expected");
     }
 
-    for(int i = 0; i < r; i++){
+    for (int i = 0; i < r; i++) {
         /* extract string from first token */
         if (compare_token(json_string, &t[i], stored_data[0].name) == TOKEN_MATCHES) {
             /* extract duty value from secon token */
@@ -97,15 +110,14 @@ ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data
 }
 
 
-ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len)
-{
+ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len) {
     result[0] = '\0';
-    strcat(result, "{");
-    for(int i = 0; i < len; i++){
+    snprintf(result, JSON_SENSOR_MAX_LEN, "{");
+    for (int i = 0; i < len; i++) {
         char stringed_pair[TOKEN_NAME_MAX_LEN+TOKEN_FLOAT_MAX_LEN+8];
-        sprintf(stringed_pair, "\"%s\": \"0x%04X\"",inputs[i].name, inputs[i].value);
+        snprintf(stringed_pair, JSON_SENSOR_MAX_LEN, "\"%s\": \"0x%04X\"", inputs[i].name, inputs[i].value);
         strcat(result, stringed_pair);
-        if(i != len-1){
+        if (i != len-1) {
             strcat(result, ", ");
         }
     }

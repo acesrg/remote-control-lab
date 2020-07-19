@@ -1,3 +1,21 @@
+/*
+ * Copyright 2020 Marco Miretti.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
 #include <espressif/esp_common.h>
 #include <esp8266.h>
 #include <esp/uart.h>
@@ -14,7 +32,7 @@
 #include <callback_test.h>
 #include <callback_classic.h>
 
-// TODO: this should be some kind of pointer
+// TODO(marcotti): this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
 
 /*
@@ -29,30 +47,22 @@ SemaphoreHandle_t xMutex_sensor_data;
  * Note: this function is executed on TCP thread and should return as soon
  * as possible.
  */
-void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode)
-{
+void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     if (URI_TASK == URI_CLASSIC) {
         log_trace("received classic control callback");
         CallbackRvType rv = classic_callback_handler(pcb, data, data_len, mode);
-        if (rv == CALLBACK_OK){
+        if (rv == CALLBACK_OK)
             log_trace("classic control callback handled");
-        }
-        else{
+        else
             log_error("classic control callback exited with error status: %d", rv);
-        }
-    }
-    
-    else if (URI_TASK == URI_PARSE_TEST) {
+    } else if (URI_TASK == URI_PARSE_TEST) {
         log_info("received test callback");
         TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
-        if (rv == TEST_OK){
+        if (rv == TEST_OK)
             log_info("test: everything of from this end");
-        }
-        else{
+        else
             log_error("test: something went wrong");
-        }
-    }
-    else {
+    } else {
         log_error("callback method unrecognized");
     }
 }
@@ -60,24 +70,20 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
 /**
  * This function is called when new websocket is open
  */
-void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
-{
+void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/classic")) {
         URI_TASK = URI_CLASSIC;
         log_info("Request for classic control");
         xTaskCreate(&classic_controller_task, "classcic_controller_task", 512, (void *) pcb, 2, NULL);
-    }
-    else if (!strcmp(uri, "/start_pwm")) {
+    } else if (!strcmp(uri, "/start_pwm")) {
         URI_TASK = URI_START_PWM;
         log_info("Request for propeller start");
         xTaskCreate(&start_pwm_task, "start_pwm_task", 256, (void *) pcb, 2, NULL);
-    }
-    else if (!strcmp(uri, "/ping")) {
+    } else if (!strcmp(uri, "/ping")) {
         URI_TASK = URI_PING;
         log_info("Request for ping");
         xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
-    }
-    else if (!strcmp(uri, "/test")) {
+    } else if (!strcmp(uri, "/test")) {
         URI_TASK = URI_PARSE_TEST;
         log_info("Test task");
         xTaskCreate(&test_task, "test_task", 256, (void *) pcb, 2, NULL);
@@ -85,22 +91,19 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
     log_trace("task %s created", uri);
 }
 
-void httpd_task(void *pvParameters)
-{
+void httpd_task(void *pvParameters) {
     /* initialize mutexes for database interaction */
     xMutex_actuator_data = xSemaphoreCreateMutex();
     xMutex_sensor_data = xSemaphoreCreateMutex();
 
     /* register handlers and start the server */
-    websocket_register_callbacks((tWsOpenHandler) websocket_open_cb,
-            (tWsHandler) websocket_cb);
+    websocket_register_callbacks((tWsOpenHandler) websocket_open_cb, (tWsHandler) websocket_cb);
     httpd_init();
 
-    for (;;);
+    for (;;) {}
 }
 
-void user_init(void)
-{
+void user_init(void) {
     uart_set_baud(0, 115200);
     log_info("SDK version:%s ", sdk_system_get_sdk_version());
 
