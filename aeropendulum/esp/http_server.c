@@ -65,7 +65,7 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri)
     if (!strcmp(uri, "/classic")) {
         URI_TASK = URI_CLASSIC;
         log_info("Request for classic control");
-        xTaskCreate(&classic_controller_task, "classcic_controller_task", 256, (void *) pcb, 2, NULL);
+        xTaskCreate(&classic_controller_task, "classcic_controller_task", 512, (void *) pcb, 2, NULL);
     }
     else if (!strcmp(uri, "/start_pwm")) {
         URI_TASK = URI_START_PWM;
