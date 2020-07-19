@@ -55,3 +55,4 @@ dkms.conf
 */esp/build/
 */esp/firmware/
 */tests/__pycache__/
+*/esp/include/private_ssid_config.h
