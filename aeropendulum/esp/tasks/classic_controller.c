@@ -11,6 +11,7 @@
 #include <http_server.h>
 #include <classic_controller.h>
 #include <json_parser.h>
+#include <encoder.h>
 
 // TODO: ugh such an ugly global
 extern uint8_t URI_TASK;
@@ -27,6 +28,9 @@ void classic_controller_task(void *pvParameter){
     log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
 
+    log_trace("encoder init");
+    quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
+
     while(1){
         if( xMutex_actuator_data != NULL ){
             /* See if we can obtain the actuator_db mutex */
@@ -42,10 +46,9 @@ void classic_controller_task(void *pvParameter){
         if( xMutex_sensor_data != NULL ){
             /* See if we can obtain the actuator_db mutex */
             if( xSemaphoreTake( xMutex_sensor_data, ( TickType_t ) 100 ) == pdTRUE ){
-                // TODO: read sensor data
-                float sensor_angle_value, sensor_error;
-                sensor_db[0].value = sensor_angle_value;
-                sensor_db[1].value = sensor_error;
+                
+                sensor_db[0].value = get_encoder_value(); 
+                log_trace("sensor value = %d", sensor_db[0].value);
                 xSemaphoreGive( xMutex_sensor_data );
             }
         }

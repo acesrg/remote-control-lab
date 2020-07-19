@@ -1,6 +1,6 @@
 PROGRAM=http_server
-PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./lib/log.c/src/
-PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./lib/log.c/src/
+PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./lib/log.c/src/ ./lib/driver/
+PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./lib/log.c/src/ ./lib/driver/
 
 EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR
 
