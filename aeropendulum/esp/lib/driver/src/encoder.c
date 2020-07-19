@@ -1,16 +1,34 @@
-#include "encoder.h"
-#include "json_parser.h"
+/*
+ * Copyright 2020 Marco Miretti.
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
+#include <encoder.h>
+#include <json_parser.h>
 
 /* globals to be used by isr */
 EncoderObjectType encoder = {0, 0, NO_MEASURE, 0};
 
 void encoder_intr_handler(uint8_t gpio_num);
 
-uint16_t get_encoder_value(){
+uint16_t get_encoder_value() {
     return encoder.value;
 }
 
-void set_encoder_value(uint16_t value){
+void set_encoder_value(uint16_t value) {
     encoder.value = value;
 }
 
@@ -20,14 +38,12 @@ void set_encoder_value(uint16_t value){
  *          the quadrature encoder. Set up the interrupts
  *          for the given pins and populate the structure.
  **/
-void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b)
-{ 
+void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b) {
     log_trace("Init quadrature encoder");
-    
     log_trace("Set gpio as input");
     gpio_enable(pin_a, GPIO_INPUT);
     gpio_enable(pin_b, GPIO_INPUT);
-    
+
     encoder.pin_a = pin_a;
     encoder.pin_b = pin_b;
 
@@ -35,7 +51,6 @@ void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b)
 
     gpio_set_interrupt(pin_a, GPIO_INTTYPE_EDGE_ANY, encoder_intr_handler);
     gpio_set_interrupt(pin_b, GPIO_INTTYPE_EDGE_ANY, encoder_intr_handler);
-
 }
 
 
@@ -50,25 +65,18 @@ void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b)
  * \retval  EncoderEventType (enum): the type of said
  *          interrupt (rising, falling and which pin)
  **/
-EncoderEventType detect_event_nature(uint8_t gpio_num)
-{
-    if(gpio_num == encoder.pin_a){
-        if(gpio_read(gpio_num)){
+EncoderEventType detect_event_nature(uint8_t gpio_num) {
+    if (gpio_num == encoder.pin_a) {
+        if (gpio_read(gpio_num))
             return PIN_A_RISE;
-        }
-        else{
+        else
             return PIN_A_FALL;
-        }
-    }
-    else if(gpio_num == encoder.pin_b){
-        if(gpio_read(gpio_num)){
+    } else if (gpio_num == encoder.pin_b) {
+        if (gpio_read(gpio_num))
             return PIN_B_RISE;
-        }
-        else{
+        else
             return PIN_B_FALL;
-        }
-    }
-    else{
+    } else {
         return NO_MEASURE;
     }
 }
@@ -81,18 +89,15 @@ EncoderEventType detect_event_nature(uint8_t gpio_num)
  *
  * \param gpio_num: the pin number 
  **/
-void encoder_intr_handler(uint8_t gpio_num)
-{
+void encoder_intr_handler(uint8_t gpio_num) {
     EncoderEventType current_event_nature = detect_event_nature(gpio_num);
 
-    if(encoder.last_state != NO_MEASURE){
+    if (encoder.last_state != NO_MEASURE) {
         uint8_t diff = current_event_nature - encoder.last_state;
-        if(diff == INCREMENT || diff == INCREMENT_){
+        if (diff == INCREMENT || diff == INCREMENT_)
             encoder.value++;
-        }
-        else if(diff == DECREMENT || diff == DECREMENT_){
+        else if (diff == DECREMENT || diff == DECREMENT_)
             encoder.value--;
-        }
     }
     encoder.last_state = current_event_nature;
 }

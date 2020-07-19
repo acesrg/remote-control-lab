@@ -1,6 +1,6 @@
 PROGRAM=http_server
-PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./lib/log.c/src/ ./lib/driver/
-PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./lib/log.c/src/ ./lib/driver/
+PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./third_party/log.c/src/ ./lib/driver/inc/
+PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./third_party/log.c/src/ ./lib/driver/src/
 
 EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR
 
@@ -11,7 +11,13 @@ EXTRA_COMPONENTS=extras/mbedtls extras/httpd
 EXTRA_COMPONENTS += extras/jsmn
 EXTRA_COMPONENTS += extras/pwm
 
+LINT_TOOL = cpplint
+LINT_FLAGS = --recursive --quiet
+
 include ../../common.mk
+
+lint:
+	$(LINT_TOOL) $(LINT_FLAGS) *
 
 monitor:
 	$(FILTEROUTPUT) --port $(ESPPORT) --baud 115200 --elf $(PROGRAM_OUT)
