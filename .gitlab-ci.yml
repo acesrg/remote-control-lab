@@ -21,7 +21,7 @@ code-style:
   script:
     - make lint
   tags:
-    - brasov-fw-burn
+    - fw-burn
 
 build-aero:
   stage: build
@@ -33,7 +33,7 @@ build-aero:
     - make
     - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/image.bin
   tags:
-    - brasov-fw-burn
+    - fw-burn
   artifacts:
     paths:
     - $CI_PROJECT_DIR/image.bin
@@ -47,7 +47,7 @@ flash-aero:
   script:
     - make flash_after_build
   tags:
-    - brasov-fw-burn
+    - fw-burn
   dependencies:
     - build-aero
 
@@ -56,4 +56,4 @@ test-aero:
   script:
     - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
   tags:
-    - brasov-testing
+    - testing
