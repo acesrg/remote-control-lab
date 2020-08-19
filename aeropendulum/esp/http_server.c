@@ -17,6 +17,7 @@
  * Boston, MA 02110-1301, USA.
  */
 #include <espressif/esp_common.h>
+#include <espressif/user_interface.h>
 #include <esp8266.h>
 #include <esp/uart.h>
 #include <string.h>
@@ -112,8 +113,16 @@ void user_init(void) {
         .password = WIFI_PASS,
     };
 
+    struct ip_info station_ip;
+    IP4_ADDR(&station_ip.ip, 192, 168, 1, 41);
+    IP4_ADDR(&station_ip.gw, 192, 168, 1, 1);
+    IP4_ADDR(&station_ip.netmask, 255, 255, 255, 0);
+    sdk_wifi_station_dhcpc_stop();
+    vTaskDelay(50);
+
     /* required to call wifi_set_opmode before station_set_config */
     sdk_wifi_set_opmode(STATION_MODE);
+    log_trace("static ip set status : %d", sdk_wifi_set_ip_info(STATION_IF, &station_ip));
     sdk_wifi_station_set_config(&config);
     sdk_wifi_station_connect();
 
