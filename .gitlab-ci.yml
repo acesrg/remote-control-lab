@@ -56,4 +56,4 @@ test-aero:
   script:
     - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
   tags:
-    - brasov-testing
+    - testing
