@@ -5,7 +5,8 @@ import unittest
 import json
 import websockets
 
-AEROPENDULUM_IP_ADD = "192.168.1.41"
+# TODO: this should be more automatic
+AEROPENDULUM_IP_ADD = "192.168.100.41"
 
 
 class WebsocketsTestCase(unittest.TestCase):
