@@ -114,8 +114,10 @@ void user_init(void) {
     };
 
     struct ip_info station_ip;
-    IP4_ADDR(&station_ip.ip, 192, 168, 1, 41);
-    IP4_ADDR(&station_ip.gw, 192, 168, 1, 1);
+
+    /* TODO: this should be more automatic */
+    IP4_ADDR(&station_ip.ip, 192, 168, 100, 41);
+    IP4_ADDR(&station_ip.gw, 192, 168, 100, 1);
     IP4_ADDR(&station_ip.netmask, 255, 255, 255, 0);
     sdk_wifi_station_dhcpc_stop();
     vTaskDelay(50);
