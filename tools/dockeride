@@ -1,3 +1,17 @@
-#!/bin/bash
+#!/bin/bash 
+docker run --rm -dit --privileged --name fw_burn -e "YOUARECONTAINERIZEDBUDDY=y" -e "TERM=xterm-256color" -e "ESPBAUD=460800" -e "WIFI_SSID=$WIFI_SSID" -e "WIFI_PASS=$WIFI_PASS" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
 
-docker run --rm -it --privileged -e "TERM=xterm-256color" -e "ESPBAUD=460800" -e "WIFI_SSID=<your-ssid>" -e "WIFI_PASS=<your-pass>" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
+# back up the private_ssid_config.h file
+docker exec fw_burn cp /home/esp/esp-open-rtos/examples/project/include/private_ssid_config.h /home/esp/private_ssid_config.h.tmp
+
+# make an environment variable substitution
+docker exec fw_burn bash -c 'envsubst < /home/esp/esp-open-rtos/examples/project/include/private_ssid_config.h | sponge /home/esp/esp-open-rtos/examples/project/include/private_ssid_config.h'
+
+# run bash
+docker exec -it fw_burn bash
+
+# restore the private_ssid_config.h file
+docker exec fw_burn mv /home/esp/private_ssid_config.h.tmp /home/esp/esp-open-rtos/examples/project/include/private_ssid_config.h
+
+# stop the container
+docker stop fw_burn

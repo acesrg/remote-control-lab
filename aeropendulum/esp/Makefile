@@ -14,7 +14,19 @@ EXTRA_COMPONENTS += extras/pwm
 LINT_TOOL = cpplint
 LINT_FLAGS = --recursive --quiet
 
+ifdef YOUARECONTAINERIZEDBUDDY
 include ../../common.mk
+endif
+
+dockeride:
+ifndef YOUARECONTAINERIZEDBUDDY
+	../../tools/dockeride
+else
+	echo "Alredy dockerized, pal!"
+endif
+
+unittest:
+	docker run --rm -it -v $(PWD)/../tests:/home/tests marcotti/remote-lab-debian-host python3 -m unittest discover -v -s /home/tests
 
 lint:
 	$(LINT_TOOL) $(LINT_FLAGS) *
