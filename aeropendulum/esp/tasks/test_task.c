@@ -24,15 +24,22 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <http_server.h>
+#include <httpd/httpd.h>
 
-#define TEST_WAIT_TIME_ms 500
+#define KILL_POLL_TIME_ms 100
 
 
 extern uint8_t URI_TASK;
 
 void test_task(void *pvParameter) {
-    vTaskDelay(TEST_WAIT_TIME_ms / portTICK_PERIOD_MS);
-    URI_TASK = URI_UNDEF;
-    log_trace("disconected, delete task");
-    vTaskDelete(NULL);
+    struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
+    while (1) {
+        if (pcb == NULL || pcb->state != ESTABLISHED) {
+            // when task stops mark as undefined
+            URI_TASK = URI_UNDEF;
+            log_trace("disconected, delete task");
+            vTaskDelete(NULL);
+        }
+    }
+    vTaskDelay(KILL_POLL_TIME_ms / portTICK_PERIOD_MS);
 }

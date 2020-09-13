@@ -64,7 +64,7 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
         else
             log_error("test: something went wrong");
     } else {
-        log_error("callback method unrecognized");
+        log_error("callback method unrecognized %d", URI_TASK);
     }
 }
 
@@ -106,6 +106,7 @@ void httpd_task(void *pvParameters) {
 
 void user_init(void) {
     uart_set_baud(0, 115200);
+    log_set_level(LOG_WARN);
     log_info("SDK version:%s ", sdk_system_get_sdk_version());
 
     struct sdk_station_config config = {
