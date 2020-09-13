@@ -35,6 +35,7 @@ extern SemaphoreHandle_t xMutex_actuator_data;
 extern SemaphoreHandle_t xMutex_sensor_data;
 
 CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+    data[data_len] = '\0';
     /*
      * first thing to do when entering the callback for the classic
      * controller is to write the sensor data to the websocket. This
@@ -65,7 +66,7 @@ CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_
      * json shold have the form of {"duty": %f}. We pass directly
      * the structure (initialized with said form).
      *
-     * after this call, actuator_db.value should be updated and 
+     * after this call, actuator_db.value should be updated and
      * ready to use.
      * */
     if (xMutex_sensor_data != NULL) {
