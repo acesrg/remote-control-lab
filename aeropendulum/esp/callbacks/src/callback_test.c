@@ -30,6 +30,7 @@
 #include <callback_test.h>
 
 TestRvType test_uri_parsing(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+        data[data_len] = '\0';
         log_info("parse test, inputs: %s", data);
         SimpleJSONType received_data[1];
         snprintf(received_data[0].name, TOKEN_NAME_MAX_LEN, "duty");
