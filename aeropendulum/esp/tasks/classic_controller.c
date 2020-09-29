@@ -37,7 +37,7 @@ extern uint8_t URI_TASK;
 extern SemaphoreHandle_t xMutex_actuator_data;
 extern SemaphoreHandle_t xMutex_sensor_data;
 
-SimpleJSONType actuator_db[1] = {{"duty", 0}};
+SimpleJSONType actuator_db[1] = {{"duty", DEFAULT_PROPELLER_PWM_POWERON_DUTY}};
 
 SimpleJSONType sensor_db[2] = {{"angle", 0},
                                {"error", 0}};
