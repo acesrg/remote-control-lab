@@ -22,6 +22,6 @@
 /*
  * Classic mode definitions
  * */
-#define CLASSIC_SYSTEM_REFRESH_RATE_ms 20
+#define CLASSIC_SYSTEM_REFRESH_RATE_ms 50
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_CLASSIC_CONTROLLER_H_ */
