@@ -56,7 +56,9 @@ void classic_controller_task(void *pvParameter) {
                 uint16_t actuator_duty_value = actuator_db[0].value;
 
                 log_trace("set actuator duty: 0x%04X");
+                taskENTER_CRITICAL();
                 pwm_set_duty(actuator_duty_value);
+                taskEXIT_CRITICAL();
                 xSemaphoreGive(xMutex_actuator_data);
             }
         }
