@@ -49,17 +49,22 @@ void classic_controller_task(void *pvParameter) {
     log_trace("encoder init");
     quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
 
+    uint16_t last_actuator_duty = 0;
+
     while (1) {
         if (xMutex_actuator_data != NULL) {
             /* See if we can obtain the actuator_db mutex */
             if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
                 uint16_t actuator_duty_value = actuator_db[0].value;
-
-                log_trace("set actuator duty: 0x%04X");
-                taskENTER_CRITICAL();
-                pwm_set_duty(actuator_duty_value);
-                taskEXIT_CRITICAL();
                 xSemaphoreGive(xMutex_actuator_data);
+
+                if (actuator_duty_value != last_actuator_duty) {
+                    log_trace("set actuator duty: 0x%04X");
+                    taskENTER_CRITICAL();
+                    pwm_set_duty(actuator_duty_value);
+                    taskEXIT_CRITICAL();
+                }
+                last_actuator_duty = actuator_duty_value;
             }
         }
 
