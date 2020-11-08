@@ -32,12 +32,6 @@
 #include <pwm.h>
 
 
-typedef struct PwmConfigType {
-    uint16_t frequency_hz;
-    uint16_t poweron_duty;
-    uint16_t pin;
-} PwmConfigType;
-
 extern uint8_t URI_TASK;
 
 PwmConfigType pwm_config = {
