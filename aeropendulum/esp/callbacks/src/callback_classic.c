@@ -44,12 +44,12 @@ CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_
     char composed_json[JSON_SENSOR_MAX_LEN];
     size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
 
-    if (xMutex_actuator_data != NULL) {
-        /* See if we can obtain the actuator_db mutex */
-        if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
+    if (xMutex_sensor_data != NULL) {
+        /* See if we can obtain the sensor_db mutex */
+        if (xSemaphoreTake(xMutex_sensor_data, (TickType_t) 100) == pdTRUE) {
             ParseRvType compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
 
-            xSemaphoreGive(xMutex_actuator_data);
+            xSemaphoreGive(xMutex_sensor_data);
             if (compose_rv != PARSE_OK) {
                 return CALLBACK_PARSE_ERROR;
             }
@@ -69,12 +69,12 @@ CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_
      * after this call, actuator_db.value should be updated and
      * ready to use.
      * */
-    if (xMutex_sensor_data != NULL) {
+    if (xMutex_actuator_data != NULL) {
         /* See if we can obtain the actuator_db mutex */
-        if (xSemaphoreTake(xMutex_sensor_data, (TickType_t) 100) == pdTRUE) {
+        if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
             ParseRvType parse_rv = quick_get_value((const char *) data, actuator_db);
 
-            xSemaphoreGive(xMutex_sensor_data);
+            xSemaphoreGive(xMutex_actuator_data);
 
             if (parse_rv != PARSE_OK) {
                 return CALLBACK_PARSE_ERROR;

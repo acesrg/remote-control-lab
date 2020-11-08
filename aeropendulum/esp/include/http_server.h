@@ -47,6 +47,12 @@ enum URI_TASK {
     URI_PARSE_TEST,
 };
 
+typedef struct PwmConfigType {
+    uint16_t frequency_hz;
+    uint16_t poweron_duty;
+    uint16_t pin;
+} PwmConfigType;
+
 void start_pwm_task(void *pvParameter);
 
 void classic_controller_task(void *pvParameter);
