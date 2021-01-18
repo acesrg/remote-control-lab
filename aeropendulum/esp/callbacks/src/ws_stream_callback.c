@@ -23,8 +23,8 @@
 #include <semphr.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
-#include <callback_classic.h>
-#include <classic_controller.h>
+#include <ws_stream_callback.h>
+#include <ws_stream.h>
 #include <json_parser.h>
 
 
@@ -34,11 +34,11 @@ extern SimpleJSONType sensor_db[2];
 extern SemaphoreHandle_t xMutex_actuator_data;
 extern SemaphoreHandle_t xMutex_sensor_data;
 
-CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+CallbackRvType ws_stream_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
     /*
-     * first thing to do when entering the callback for the classic
-     * controller is to write the sensor data to the websocket. This
+     * first thing to do when entering the callback for the websocket
+     * stream is to write the sensor data to the websocket. This
      * way we avoid adding the parsing time to the websocket latency.
      * */
     char composed_json[JSON_SENSOR_MAX_LEN];
@@ -62,7 +62,7 @@ CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_
      * then, once the response was written to the websocket start
      * processing the input data.
      *
-     * since the classic controller database is being used, and the
+     * since the websocket stream database is being used, and the
      * json shold have the form of {"duty": %f}. We pass directly
      * the structure (initialized with said form).
      *

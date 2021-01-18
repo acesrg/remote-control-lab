@@ -27,7 +27,7 @@
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
-#include <classic_controller.h>
+#include <ws_stream.h>
 #include <json_parser.h>
 #include <pwm.h>
 

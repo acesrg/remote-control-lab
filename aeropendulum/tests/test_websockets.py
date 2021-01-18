@@ -31,8 +31,8 @@ class WebsocketsTestCase(unittest.TestCase):
     def test_ping(self):
         self.loop.run_until_complete(self.a_test_ping())
 
-    async def a_test_classic_control_response(self):
-        uri = "classic"
+    async def a_test_websocket_stream_response(self):
+        uri = "stream"
         websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
         #send to activate callback and receive
         await websocket.send(self.message)
@@ -43,8 +43,8 @@ class WebsocketsTestCase(unittest.TestCase):
         self.assertIsInstance(int(parsed_response['angle'], 16), int)
         self.assertIsInstance(int(parsed_response['error'], 16), int)
 
-    def test_classic_control_response(self):
-        self.loop.run_until_complete(self.a_test_classic_control_response())
+    def test_websocket_stream_response(self):
+        self.loop.run_until_complete(self.a_test_websocket_stream_response())
 
 
     async def a_test_json_parsing(self):

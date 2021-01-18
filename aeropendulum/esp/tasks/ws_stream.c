@@ -27,7 +27,7 @@
 #include <ssid_config.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
-#include <classic_controller.h>
+#include <ws_stream.h>
 #include <json_parser.h>
 #include <encoder.h>
 
@@ -44,7 +44,7 @@ SimpleJSONType actuator_db[1] = {{"duty", DEFAULT_PROPELLER_PWM_POWERON_DUTY}};
 SimpleJSONType sensor_db[2] = {{"angle", 0},
                                {"error", 0}};
 
-void classic_controller_task(void *pvParameter) {
+void ws_stream_task(void *pvParameter) {
     log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
 
@@ -100,7 +100,7 @@ void classic_controller_task(void *pvParameter) {
             }
         }
 
-        vTaskDelay(CLASSIC_SYSTEM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
+        vTaskDelay(WS_STREAM_REFRESH_RATE_ms / portTICK_PERIOD_MS);
 
         if (pcb == NULL || pcb->state != ESTABLISHED) {
             // when task stops mark as undefined

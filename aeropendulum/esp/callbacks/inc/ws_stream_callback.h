@@ -16,8 +16,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_
-#define EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_
+#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_WS_STREAM_CALLBACK_H_
+#define EXAMPLES_PROJECT_CALLBACKS_INC_WS_STREAM_CALLBACK_H_
 
 #include <espressif/esp_common.h>
 #include <esp8266.h>
@@ -30,6 +30,6 @@ typedef enum CallbackRvType {
     CALLBACK_PARSE_ERROR,
 } CallbackRvType;
 
-CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
+CallbackRvType ws_stream_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
 
-#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_ */
+#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_WS_STREAM_CALLBACK_H_ */
