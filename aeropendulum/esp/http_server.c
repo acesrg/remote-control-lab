@@ -31,7 +31,7 @@
 
 /* include callbacks */
 #include <callback_test.h>
-#include <ws_stream_callback.h>
+#include <telemetry_callback.h>
 
 // TODO(marcotti): this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
@@ -50,8 +50,8 @@ SemaphoreHandle_t xMutex_sensor_data;
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     if (URI_TASK == URI_WS_STREAM) {
-        log_trace("received ws stream callback");
-        CallbackRvType rv = ws_stream_callback_handler(pcb, data, data_len, mode);
+        log_trace("received ws stream callback, someone is talking");
+        CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
         if (rv == CALLBACK_OK)
             log_trace("ws stream callback handled");
         else
@@ -75,7 +75,7 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/stream")) {
         URI_TASK = URI_WS_STREAM;
         log_info("Request for websocket stream");
-        xTaskCreate(&ws_stream_task, "websocket_stream", 512, (void *) pcb, 2, NULL);
+        xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
     } else if (!strcmp(uri, "/start_pwm")) {
         URI_TASK = URI_START_PWM;
         log_info("Request for propeller start");

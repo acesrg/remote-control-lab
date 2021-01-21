@@ -55,7 +55,7 @@ typedef struct PwmConfigType {
 
 void start_pwm_task(void *pvParameter);
 
-void ws_stream_task(void *pvParameter);
+void send_telemetry_task(void *pvParameter);
 
 void ping_task(void *pvParameter);
 

@@ -30,6 +30,6 @@ typedef enum CallbackRvType {
     CALLBACK_PARSE_ERROR,
 } CallbackRvType;
 
-CallbackRvType ws_stream_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
+CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
 
 #endif /* EXAMPLES_PROJECT_CALLBACKS_INC_WS_STREAM_CALLBACK_H_ */

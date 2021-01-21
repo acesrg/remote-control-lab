@@ -16,12 +16,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_WS_STREAM_H_
-#define EXAMPLES_PROJECT_INCLUDE_WS_STREAM_H_
+#ifndef EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
+#define EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
 
 /*
- * Stream definitions
+ * Telemetry definitions
  * */
-#define WS_STREAM_REFRESH_RATE_ms 50
+#define TELEMETRY_RATE_ms 50
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_WS_STREAM_H_ */
+#endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */

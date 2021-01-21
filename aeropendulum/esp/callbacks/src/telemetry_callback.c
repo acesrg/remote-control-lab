@@ -23,8 +23,8 @@
 #include <semphr.h>
 #include <httpd/httpd.h>
 #include <http_server.h>
-#include <ws_stream_callback.h>
-#include <ws_stream.h>
+#include <telemetry_callback.h>
+#include <send_telemetry.h>
 #include <json_parser.h>
 
 
@@ -34,7 +34,7 @@ extern SimpleJSONType sensor_db[2];
 extern SemaphoreHandle_t xMutex_actuator_data;
 extern SemaphoreHandle_t xMutex_sensor_data;
 
-CallbackRvType ws_stream_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
     /*
      * first thing to do when entering the callback for the websocket
