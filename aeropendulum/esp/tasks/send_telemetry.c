@@ -34,12 +34,7 @@
 
 extern uint8_t URI_TASK;
 
-extern SemaphoreHandle_t xMutex_actuator_data;
 extern SemaphoreHandle_t xMutex_sensor_data;
-
-extern PwmConfigType pwm_config;
-
-SimpleJSONType actuator_db[1] = {{"duty", DEFAULT_PROPELLER_PWM_POWERON_DUTY}};
 
 SimpleJSONType sensor_db[2] = {{"angle", 0},
                                {"error", 0}};
@@ -48,49 +43,11 @@ void send_telemetry_task(void *pvParameter) {
     log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
 
+    // TODO(marcotti): outer endpoint
     log_trace("encoder init");
     quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
 
-    uint16_t last_actuator_duty = 0;
-
     while (1) {
-        if (xMutex_actuator_data != NULL) {
-            /* See if we can obtain the actuator_db mutex */
-            if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
-                uint16_t actuator_duty_value = actuator_db[0].value;
-                xSemaphoreGive(xMutex_actuator_data);
-
-                /*
-                 * PWM workarround:
-                 *
-                 * It seems that updating the pwm during the duty cycle causes it to go down and
-                 * inmediatly up again. This could produce unintended behavior, such as turning
-                 * the PWM off at an specific time, that the motor driver would interpret as some
-                 * new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
-                 *
-                 * To mitigate this behaviors, pwm duty is updated only whe it has actually
-                 * changed.
-                 *
-                 * Then, to supress the possibility of unexpected commands making it to the PWM
-                 * driver, the duty cycle is updated ONLY during PWM's low state.
-                 *
-                 * This is a workarround, the ideal behavior is that the pwm duty cycle updates at
-                 * the beginning of a new cycle only. This doesn't happen here.
-                 * */
-                if (actuator_duty_value != last_actuator_duty) {
-                    while (gpio_read(pwm_config.pin)) {
-                        log_trace("waiting for duty cycle to end ...");
-                        vTaskDelay(0.1 / (1000 * pwm_config.frequency_hz * portTICK_PERIOD_MS));
-                    }
-                    log_trace("set actuator duty: 0x%04X", actuator_duty_value);
-                    taskENTER_CRITICAL();
-                    pwm_set_duty(actuator_duty_value);
-                    taskEXIT_CRITICAL();
-                }
-                last_actuator_duty = actuator_duty_value;
-            }
-        }
-
         if (xMutex_sensor_data != NULL) {
             /* See if we can obtain the actuator_db mutex */
             if (xSemaphoreTake(xMutex_sensor_data, (TickType_t) 100) == pdTRUE) {

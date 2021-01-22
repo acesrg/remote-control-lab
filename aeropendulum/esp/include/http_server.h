@@ -57,6 +57,8 @@ void start_pwm_task(void *pvParameter);
 
 void send_telemetry_task(void *pvParameter);
 
+void update_actuators_task(void *pvParameter);
+
 void ping_task(void *pvParameter);
 
 void test_task(void *pvParameter);
