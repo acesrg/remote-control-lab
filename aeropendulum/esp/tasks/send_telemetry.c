@@ -56,7 +56,9 @@ void send_telemetry_task(void *pvParameter) {
             log_error("compose error");
         }
 
+        LOCK_TCPIP_CORE();
         websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
+        UNLOCK_TCPIP_CORE();
 
         // TODO(marcotti): it should sleep (RATE_ms - elapsed)
         vTaskDelay(TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
