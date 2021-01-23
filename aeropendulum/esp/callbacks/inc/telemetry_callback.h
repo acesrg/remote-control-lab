@@ -26,7 +26,6 @@
 
 typedef enum CallbackRvType {
     CALLBACK_OK,
-    CALLBACK_COMPOSE_ERROR,
     CALLBACK_PARSE_ERROR,
 } CallbackRvType;
 

@@ -31,13 +31,10 @@
 #include <json_parser.h>
 #include <encoder.h>
 
-
 extern uint8_t URI_TASK;
 
-extern SemaphoreHandle_t xMutex_sensor_data;
-
-SimpleJSONType sensor_db[2] = {{"angle", 0},
-                               {"error", 0}};
+static SimpleJSONType sensor_db[2] = {{"angle", 0},
+                                      {"error", 0}};
 
 void send_telemetry_task(void *pvParameter) {
     log_trace("task started");
@@ -48,15 +45,20 @@ void send_telemetry_task(void *pvParameter) {
     quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
 
     while (1) {
-        if (xMutex_sensor_data != NULL) {
-            /* See if we can obtain the actuator_db mutex */
-            if (xSemaphoreTake(xMutex_sensor_data, (TickType_t) 100) == pdTRUE) {
-                sensor_db[0].value = get_encoder_value();
-                log_trace("sensor value = %d", sensor_db[0].value);
-                xSemaphoreGive(xMutex_sensor_data);
-            }
+        sensor_db[0].value = get_encoder_value();
+        log_trace("sensor value = %d", sensor_db[0].value);
+
+        char composed_json[JSON_SENSOR_MAX_LEN];
+        size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
+
+        ParseRvType compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
+        if (compose_rv != PARSE_OK) {
+            log_error("compose error");
         }
 
+        websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
+
+        // TODO(marcotti): it should sleep (RATE_ms - elapsed)
         vTaskDelay(TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
 
         if (pcb == NULL || pcb->state != ESTABLISHED) {

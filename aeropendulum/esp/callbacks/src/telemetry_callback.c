@@ -29,35 +29,11 @@
 
 
 extern SimpleJSONType actuator_db[1];
-extern SimpleJSONType sensor_db[2];
 
 extern SemaphoreHandle_t xMutex_actuator_data;
-extern SemaphoreHandle_t xMutex_sensor_data;
 
 CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
-    /*
-     * first thing to do when entering the callback for the websocket
-     * stream is to write the sensor data to the websocket. This
-     * way we avoid adding the parsing time to the websocket latency.
-     * */
-    char composed_json[JSON_SENSOR_MAX_LEN];
-    size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
-
-    if (xMutex_sensor_data != NULL) {
-        /* See if we can obtain the sensor_db mutex */
-        if (xSemaphoreTake(xMutex_sensor_data, (TickType_t) 100) == pdTRUE) {
-            ParseRvType compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
-
-            xSemaphoreGive(xMutex_sensor_data);
-            if (compose_rv != PARSE_OK) {
-                return CALLBACK_PARSE_ERROR;
-            }
-        }
-    }
-    websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
-
-
     /*
      * then, once the response was written to the websocket start
      * processing the input data.
