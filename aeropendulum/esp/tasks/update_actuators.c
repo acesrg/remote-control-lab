@@ -45,6 +45,8 @@ void update_actuators_task(void *pvParameter) {
 
     uint16_t last_actuator_duty = 0;
 
+    // Initialise the xLastWakeTime variable with the current time.
+    TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1) {
         if (xMutex_actuator_data != NULL) {
             /* See if we can obtain the actuator_db mutex */
@@ -82,7 +84,6 @@ void update_actuators_task(void *pvParameter) {
                 last_actuator_duty = actuator_duty_value;
             }
         }
-
-        vTaskDelay(ACTUATORS_UPDATE_RATE_ms / portTICK_PERIOD_MS);
+        vTaskDelayUntil(&xLastWakeTime, ACTUATORS_UPDATE_RATE_ms / portTICK_PERIOD_MS);
     }
 }

@@ -44,6 +44,8 @@ void send_telemetry_task(void *pvParameter) {
     log_trace("encoder init");
     quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
 
+    // Initialise the xLastWakeTime variable with the current time.
+    TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1) {
         sensor_db[0].value = get_encoder_value();
         log_trace("sensor value = %d", sensor_db[0].value);
@@ -60,9 +62,7 @@ void send_telemetry_task(void *pvParameter) {
         websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
         UNLOCK_TCPIP_CORE();
 
-        // TODO(marcotti): it should sleep (RATE_ms - elapsed)
-        vTaskDelay(TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
-
+        vTaskDelayUntil(&xLastWakeTime, TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
         if (pcb == NULL || pcb->state != ESTABLISHED) {
             // when task stops mark as undefined
             URI_TASK = URI_UNDEF;
