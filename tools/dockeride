@@ -1,5 +1,38 @@
 #!/bin/bash 
-docker run --rm -dit --privileged --name fw_burn -e "YOUARECONTAINERIZEDBUDDY=y" -e "TERM=xterm-256color" -e "ESPBAUD=460800" -e "WIFI_SSID=$WIFI_SSID" -e "WIFI_PASS=$WIFI_PASS" -v /dev/bus/usb:/dev/bus/usb -v $(pwd):/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
+helpFunction()
+{
+    echo ""
+    echo "Usage: $0 --p path"
+    echo -e "\t-p Path of the code to be loaded in the IDE"
+    echo -e "\t-v verbose [optional]"  
+    exit 1 # Exit script after printing help
+}
+
+while getopts ":p:v:" o; do
+    case "${o}" in
+        p)
+            CODE_PATH=${OPTARG}
+            ;;
+        v)
+            VERBOSE=true
+            ;;
+        *)
+            helpFunction
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${CODE_PATH}" ]; then
+    echo "Path not specified, will use current directory ($(pwd))"
+    CODE_PATH=$(pwd)
+fi
+
+if [ $VERBOSE ]; then
+    set -x
+fi 
+
+docker run --rm -dit --privileged --name fw_burn -e "YOUARECONTAINERIZEDBUDDY=y" -e "TERM=xterm-256color" -e "ESPBAUD=460800" -e "WIFI_SSID=$WIFI_SSID" -e "WIFI_PASS=$WIFI_PASS" -v /dev/bus/usb:/dev/bus/usb -v $CODE_PATH:/home/esp/esp-open-rtos/examples/project marcotti/esp-open-rtos /bin/bash
 
 # back up the private_ssid_config.h file
 docker exec fw_burn cp /home/esp/esp-open-rtos/examples/project/include/private_ssid_config.h /home/esp/private_ssid_config.h.tmp
