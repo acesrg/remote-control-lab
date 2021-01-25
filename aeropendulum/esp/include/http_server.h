@@ -41,7 +41,7 @@
 
 enum URI_TASK {
     URI_UNDEF,
-    URI_CLASSIC,
+    URI_WS_STREAM,
     URI_START_PWM,
     URI_PING,
     URI_PARSE_TEST,
@@ -55,7 +55,9 @@ typedef struct PwmConfigType {
 
 void start_pwm_task(void *pvParameter);
 
-void classic_controller_task(void *pvParameter);
+void send_telemetry_task(void *pvParameter);
+
+void update_actuators_task(void *pvParameter);
 
 void ping_task(void *pvParameter);
 

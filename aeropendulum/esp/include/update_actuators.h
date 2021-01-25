@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marco Miretti.
+ * Copyright 2021 Marco Miretti.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_
-#define EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_
+#ifndef EXAMPLES_PROJECT_INCLUDE_UPDATE_ACTUATORS_H_
+#define EXAMPLES_PROJECT_INCLUDE_UPDATE_ACTUATORS_H_
 
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <string.h>
-#include <stdio.h>
+/*
+ * Telemetry definitions
+ * */
+#define ACTUATORS_UPDATE_RATE_ms 50
 
-typedef enum CallbackRvType {
-    CALLBACK_OK,
-    CALLBACK_COMPOSE_ERROR,
-    CALLBACK_PARSE_ERROR,
-} CallbackRvType;
-
-CallbackRvType classic_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
-
-#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_CLASSIC_H_ */
+#endif /* EXAMPLES_PROJECT_INCLUDE_UPDATE_ACTUATORS_H_ */

@@ -31,7 +31,7 @@
 
 /* include callbacks */
 #include <callback_test.h>
-#include <callback_classic.h>
+#include <telemetry_callback.h>
 
 // TODO(marcotti): this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
@@ -49,13 +49,13 @@ SemaphoreHandle_t xMutex_sensor_data;
  * as possible.
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
-    if (URI_TASK == URI_CLASSIC) {
-        log_trace("received classic control callback");
-        CallbackRvType rv = classic_callback_handler(pcb, data, data_len, mode);
+    if (URI_TASK == URI_WS_STREAM) {
+        log_trace("received ws stream callback, someone is talking");
+        CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
         if (rv == CALLBACK_OK)
-            log_trace("classic control callback handled");
+            log_trace("ws stream callback handled");
         else
-            log_error("classic control callback exited with error status: %d", rv);
+            log_error("ws stream callback exited with error status: %d", rv);
     } else if (URI_TASK == URI_PARSE_TEST) {
         log_info("received test callback");
         TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
@@ -72,10 +72,11 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
  * This function is called when new websocket is open
  */
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
-    if (!strcmp(uri, "/classic")) {
-        URI_TASK = URI_CLASSIC;
-        log_info("Request for classic control");
-        xTaskCreate(&classic_controller_task, "classcic_controller_task", 512, (void *) pcb, 2, NULL);
+    if (!strcmp(uri, "/stream")) {
+        URI_TASK = URI_WS_STREAM;
+        log_info("Request for websocket stream");
+        xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
+        xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
     } else if (!strcmp(uri, "/start_pwm")) {
         URI_TASK = URI_START_PWM;
         log_info("Request for propeller start");

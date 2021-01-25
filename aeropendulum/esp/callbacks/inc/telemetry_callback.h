@@ -16,12 +16,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_CLASSIC_CONTROLLER_H_
-#define EXAMPLES_PROJECT_INCLUDE_CLASSIC_CONTROLLER_H_
+#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_
+#define EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_
 
-/*
- * Classic mode definitions
- * */
-#define CLASSIC_SYSTEM_REFRESH_RATE_ms 50
+#include <espressif/esp_common.h>
+#include <esp8266.h>
+#include <string.h>
+#include <stdio.h>
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_CLASSIC_CONTROLLER_H_ */
+typedef enum CallbackRvType {
+    CALLBACK_OK,
+    CALLBACK_PARSE_ERROR,
+} CallbackRvType;
+
+CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
+
+#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_ */
