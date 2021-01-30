@@ -60,6 +60,9 @@ void send_telemetry_task(void *pvParameter) {
 
         LOCK_TCPIP_CORE();
         websocket_write(pcb, (uint8_t *) composed_json, strlen(composed_json), WS_TEXT_MODE);
+
+        // send inmediadtly everything written to TCP socket
+        tcp_output(pcb);
         UNLOCK_TCPIP_CORE();
 
         vTaskDelayUntil(&xLastWakeTime, TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
