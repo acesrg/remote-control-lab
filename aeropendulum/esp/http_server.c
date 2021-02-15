@@ -31,10 +31,13 @@
 
 /* include callbacks */
 #include <callback_test.h>
+#include <test_cgi.h>
+#include <logger_cgi.h>
 #include <telemetry_callback.h>
 
 // TODO(marcotti): this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
+uint8_t SYSTEM_LOG_LEVEL = LOG_WARN;
 
 /*
  * Define the mutexes for both data structures
@@ -98,6 +101,14 @@ void httpd_task(void *pvParameters) {
     xMutex_actuator_data = xSemaphoreCreateMutex();
     xMutex_sensor_data = xSemaphoreCreateMutex();
 
+    tCGI pCGIs[] = {
+        {"/test", (tCGIHandler) test_cgi_handler},
+        {"/logger/level", (tCGIHandler) logger_cgi_handler},
+    };
+
+    /* register handlers and start the server */
+    http_set_cgi_handlers(pCGIs, sizeof (pCGIs) / sizeof (pCGIs[0]));
+
     /* register handlers and start the server */
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb, (tWsHandler) websocket_cb);
     httpd_init();
@@ -107,7 +118,7 @@ void httpd_task(void *pvParameters) {
 
 void user_init(void) {
     uart_set_baud(0, 115200);
-    log_set_level(LOG_WARN);
+    log_set_level(SYSTEM_LOG_LEVEL);
     log_info("SDK version:%s ", sdk_system_get_sdk_version());
 
     struct sdk_station_config config = {
