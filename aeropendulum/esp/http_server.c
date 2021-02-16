@@ -34,6 +34,7 @@
 #include <test_cgi.h>
 #include <logger_cgi.h>
 #include <telemetry_callback.h>
+#include <ssi_utils.h>
 
 // TODO(marcotti): this should be some kind of pointer
 uint8_t URI_TASK = URI_UNDEF;
@@ -103,11 +104,24 @@ void httpd_task(void *pvParameters) {
 
     tCGI pCGIs[] = {
         {"/test", (tCGIHandler) test_cgi_handler},
+        {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
         {"/logger/level", (tCGIHandler) logger_cgi_handler},
+    };
+
+
+    /*
+     * only use one SSI, the handler will just replace
+     * the tag with the string from a pointer+len. The
+     * function set_ssi_response() should be called
+     * before invoking the SSI enabled file. */
+    const char *pcConfigSSITags[] = {
+        "response",
     };
 
     /* register handlers and start the server */
     http_set_cgi_handlers(pCGIs, sizeof (pCGIs) / sizeof (pCGIs[0]));
+    http_set_ssi_handler((tSSIHandler) ssi_handler, pcConfigSSITags,
+            sizeof (pcConfigSSITags) / sizeof (pcConfigSSITags[0]));
 
     /* register handlers and start the server */
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb, (tWsHandler) websocket_cb);
