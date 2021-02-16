@@ -37,8 +37,7 @@ ssiUtilsRvType load_ssi_data(const char *str, size_t str_len) {
         log_error(
             "SSI too large! Max len is: %d, given string len is %d",
             LWIP_HTTPD_MAX_TAG_INSERT_LEN,
-            str_len
-        );
+            str_len);
         return STRING_TOO_LARGE;
     }
     log_trace("String written to global variable");

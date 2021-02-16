@@ -31,4 +31,4 @@ typedef enum ssiUtilsRvType {
 int32_t ssi_handler(int32_t iIndex, char *pcInsert, int32_t iInsertLen);
 
 ssiUtilsRvType load_ssi_data(const char *str, size_t str_len);
-#endif /* EXAMPLES_PROJECT_LIB_GCI_INC_SSI_UTILS_H_ */
+#endif  /* EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_ */
