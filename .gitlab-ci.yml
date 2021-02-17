@@ -31,21 +31,23 @@ build-aero:
     - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
   script:
     - make
-    - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/image.bin
+    - mkdir $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/firmware
+    - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
   tags:
     - fw-burn
   artifacts:
     paths:
-    - $CI_PROJECT_DIR/image.bin
+    - $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
     expire_in: 1 week
 
 flash-aero:
+  variables:
+    ESP_PORT: /dev/ttyUSB0
+    BAUD_RATE: 115200
+    FW_POSITION: 0x2000
   stage: burn
-  before_script:
-    - cd $WORK_PATH
-    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
   script:
-    - make flash_after_build
+    - esptool.py --port $ESP_PORT --baud $BAUD_RATE write_flash $FW_POSITION $CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/*.bin
   tags:
     - fw-burn
   dependencies:
