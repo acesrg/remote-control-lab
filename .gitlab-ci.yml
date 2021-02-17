@@ -21,7 +21,7 @@ code-style:
   script:
     - make lint
   tags:
-    - fw-burn
+    - fw-build
 
 build-aero:
   stage: build
@@ -34,7 +34,7 @@ build-aero:
     - mkdir $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/firmware
     - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
   tags:
-    - fw-burn
+    - fw-build
   artifacts:
     paths:
     - $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
