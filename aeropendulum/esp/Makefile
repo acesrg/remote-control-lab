@@ -1,8 +1,8 @@
 PROGRAM=http_server
-PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./third_party/log.c/src/ ./lib/driver/inc/
-PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./third_party/log.c/src/ ./lib/driver/src/
+PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./third_party/log.c/src/ ./lib/driver/inc/ ./lib/cgi/inc/
+PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./third_party/log.c/src/ ./lib/driver/src/ ./lib/cgi/src/
 
-EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR
+EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR -DLWIP_HTTPD_SSI_INCLUDE_TAG=0
 
 #Enable debugging
 #EXTRA_CFLAGS+=-DLWIP_DEBUG=1 -DHTTPD_DEBUG=LWIP_DBG_ON
