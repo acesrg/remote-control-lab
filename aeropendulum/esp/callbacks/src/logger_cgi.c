@@ -55,18 +55,6 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
         return HTTP_CODE(400);
     }
 
-    char param_value[URI_VARIABLE_VALUE_MAX_LEN];
-
-    rv = uri_param_read(
-            "value",
-            param_value,
-            logger_cgi_params,
-            sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]));
-
-    if (rv != CGI_OK) {
-        return HTTP_CODE(400);
-    }
-
     switch (decode_http_verb(param_verb)) {
         case GET:
             switch (SYSTEM_LOG_LEVEL) {
@@ -90,7 +78,19 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
             }
             return "/response.ssi";
 
-        case POST:
+        case POST: {
+            char param_value[URI_VARIABLE_VALUE_MAX_LEN];
+
+            rv = uri_param_read(
+                    "value",
+                    param_value,
+                    logger_cgi_params,
+                    sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]));
+
+            if (rv != CGI_OK) {
+                return HTTP_CODE(400);
+            }
+
             if (are_strings_equal(param_value, "LOG_TRACE")) {
                 SYSTEM_LOG_LEVEL = LOG_TRACE;
             } else if (are_strings_equal(param_value, "LOG_DEBUG")) {
@@ -112,5 +112,6 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
 
         default:
             return HTTP_CODE(400);
+        }
     }
 }
