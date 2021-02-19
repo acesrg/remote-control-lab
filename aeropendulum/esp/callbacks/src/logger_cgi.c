@@ -68,8 +68,26 @@ const char *logger_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char
 
     switch (decode_http_verb(param_verb)) {
         case GET:
-            return HTTP_CODE(501);
-            break;
+            switch (SYSTEM_LOG_LEVEL) {
+                case 0:
+                    load_ssi_data("LOG_TRACE", sizeof("LOG_TRACE"));
+                    break;
+                case 1:
+                    load_ssi_data("LOG_DEBUG", sizeof("LOG_DEBUG"));
+                    break;
+                case 2:
+                    load_ssi_data("LOG_INFO", sizeof("LOG_INFO"));
+                    break;
+                case 3:
+                    load_ssi_data("LOG_WARN", sizeof("LOG_WARN"));
+                    break;
+                case 4:
+                    load_ssi_data("LOG_ERROR", sizeof("LOG_ERROR"));
+                    break;
+                default:
+                    return HTTP_CODE(500);
+            }
+            return "/response.ssi";
 
         case POST:
             if (are_strings_equal(param_level, "LOG_TRACE")) {
