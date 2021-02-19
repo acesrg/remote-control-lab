@@ -19,6 +19,6 @@
 #ifndef EXAMPLES_PROJECT_CALLBACKS_INC_LOGGER_CGI_H_
 #define EXAMPLES_PROJECT_CALLBACKS_INC_LOGGER_CGI_H_
 
-const char *logger_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
 
 #endif /* EXAMPLES_PROJECT_CALLBACKS_INC_LOGGER_CGI_H_ */

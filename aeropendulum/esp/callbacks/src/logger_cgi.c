@@ -20,14 +20,15 @@
 
 #include <logger_cgi.h>
 #include <cgi_utils.h>
+#include <ssi_utils.h>
 #include <log.h>
 
 extern uint8_t SYSTEM_LOG_LEVEL;
 
 
-const char *logger_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
+const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
     uriParamsType logger_cgi_params[2] = {{"verb", "0", false},
-                                          {"level", "0", false}};
+                                          {"value", "0", false}};
 
     cgiUtilsRvType rv;
 
@@ -54,11 +55,11 @@ const char *logger_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char
         return HTTP_CODE(400);
     }
 
-    char param_level[URI_VARIABLE_VALUE_MAX_LEN];
+    char param_value[URI_VARIABLE_VALUE_MAX_LEN];
 
     rv = uri_param_read(
-            "level",
-            param_level,
+            "value",
+            param_value,
             logger_cgi_params,
             sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]));
 
@@ -90,22 +91,22 @@ const char *logger_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char
             return "/response.ssi";
 
         case POST:
-            if (are_strings_equal(param_level, "LOG_TRACE")) {
+            if (are_strings_equal(param_value, "LOG_TRACE")) {
                 SYSTEM_LOG_LEVEL = LOG_TRACE;
-            } else if (are_strings_equal(param_level, "LOG_DEBUG")) {
+            } else if (are_strings_equal(param_value, "LOG_DEBUG")) {
                 SYSTEM_LOG_LEVEL = LOG_DEBUG;
-            } else if (are_strings_equal(param_level, "LOG_INFO")) {
+            } else if (are_strings_equal(param_value, "LOG_INFO")) {
                 SYSTEM_LOG_LEVEL = LOG_INFO;
-            } else if (are_strings_equal(param_level, "LOG_WARN")) {
+            } else if (are_strings_equal(param_value, "LOG_WARN")) {
                 SYSTEM_LOG_LEVEL = LOG_WARN;
-            } else if (are_strings_equal(param_level, "LOG_ERROR")) {
+            } else if (are_strings_equal(param_value, "LOG_ERROR")) {
                 SYSTEM_LOG_LEVEL = LOG_ERROR;
             } else {
                 log_error("Wrong log level selected, keeping %d", SYSTEM_LOG_LEVEL);
                 return HTTP_CODE(400);
             }
 
-            log_info("Changing log level to: %s", param_level);
+            log_info("Changing log level to: %s", param_value);
             log_set_level(SYSTEM_LOG_LEVEL);
             return HTTP_CODE(202);
 

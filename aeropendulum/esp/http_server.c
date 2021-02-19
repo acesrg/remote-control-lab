@@ -105,7 +105,7 @@ void httpd_task(void *pvParameters) {
     tCGI pCGIs[] = {
         {"/test", (tCGIHandler) test_cgi_handler},
         {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
-        {"/logger/level", (tCGIHandler) logger_cgi_handler},
+        {"/logger/level", (tCGIHandler) logger_level_cgi_handler},
     };
 
 
