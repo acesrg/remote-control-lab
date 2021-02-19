@@ -18,3 +18,22 @@ class HTTPTestCase(unittest.TestCase):
         res = self.con.getresponse()
         self.assertEqual(res.code, 200)
         self.assertEqual(res.read().decode('utf-8').splitlines()[0], VALUE)
+
+    def test_logger(self):
+        LOG_LEVEL = "LOG_TRACE"
+        self.con.request("POST", "/logger/level?value=" + LOG_LEVEL)
+        self.assertEqual(self.con.getresponse().code, 202)
+
+        self.con.request("GET", "/logger/level")
+        res = self.con.getresponse()
+        self.assertEqual(res.code, 200)
+        self.assertEqual(res.read().decode('utf-8').splitlines()[0], LOG_LEVEL)
+
+        LOG_LEVEL = "LOG_INFO"
+        self.con.request("POST", "/logger/level?value=" + LOG_LEVEL)
+        self.assertEqual(self.con.getresponse().code, 202)
+
+        self.con.request("GET", "/logger/level")
+        res = self.con.getresponse()
+        self.assertEqual(res.code, 200)
+        self.assertEqual(res.read().decode('utf-8').splitlines()[0], LOG_LEVEL)
