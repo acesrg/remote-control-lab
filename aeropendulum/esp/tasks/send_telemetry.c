@@ -32,6 +32,7 @@
 #include <encoder.h>
 
 extern uint8_t URI_TASK;
+uint16_t TELEMETRY_RATE_ms = DEFAULT_TELEMETRY_RATE_ms;
 
 static SimpleJSONType sensor_db[2] = {{"angle", 0},
                                       {"error", 0}};

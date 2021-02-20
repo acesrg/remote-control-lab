@@ -22,6 +22,6 @@
 /*
  * Telemetry definitions
  * */
-#define TELEMETRY_RATE_ms 50
+#define DEFAULT_TELEMETRY_RATE_ms 500
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */
