@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marco Miretti.
+ * Copyright 2021 Marco Miretti.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +16,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
-#define EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
+#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CGI_H_
+#define EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CGI_H_
 
-/*
- * Telemetry definitions
- * */
-#define MAX_TELEMETRY_RATE_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_TELEMETRY_RATE_ms 500
-#define MIN_TELEMETRY_RATE_ms 1
+const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */
+#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CGI_H_ */
