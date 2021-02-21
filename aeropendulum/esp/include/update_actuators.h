@@ -22,6 +22,6 @@
 /*
  * Telemetry definitions
  * */
-#define ACTUATORS_UPDATE_RATE_ms 50
+#define ACTUATORS_UPDATE_PERIOD_ms 50
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_UPDATE_ACTUATORS_H_ */

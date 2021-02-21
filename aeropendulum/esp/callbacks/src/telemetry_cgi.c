@@ -28,7 +28,7 @@
 #include <telemetry_cgi.h>
 #include <send_telemetry.h>
 
-extern uint16_t TELEMETRY_RATE_ms;
+extern uint16_t TELEMETRY_PERIOD_ms;
 
 const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
     uriParamsType telemetry_cgi_params[2] = {{"verb", "0", false},
@@ -63,7 +63,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
         case GET: {
             int response_len;
             char response[LWIP_HTTPD_MAX_TAG_INSERT_LEN];
-            response_len = sprintf(response, "%d Hz", TELEMETRY_RATE_ms);
+            response_len = sprintf(response, "%d ms", TELEMETRY_PERIOD_ms);
             load_ssi_data(response, response_len);
             return "/response.ssi";
         }
@@ -83,13 +83,13 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
 
             int value_int = atoi(param_value);
 
-            if ((value_int > MAX_TELEMETRY_RATE_ms) || (value_int < MIN_TELEMETRY_RATE_ms)) {
+            if ((value_int > MAX_TELEMETRY_PERIOD_ms) || (value_int < MIN_TELEMETRY_PERIOD_ms)) {
                 log_error("Period of %d [ms] is out of bounds.\n"
-                          "(max: %d ms, min: %d ms), keeping %d ms.", TELEMETRY_RATE_ms);
+                          "(max: %d ms, min: %d ms), keeping %d ms.", TELEMETRY_PERIOD_ms);
                 return HTTP_CODE(403);
             } else {
                 log_info("Changing telemetry frequency to: %d", value_int);
-                TELEMETRY_RATE_ms = value_int;
+                TELEMETRY_PERIOD_ms = value_int;
             }
             return HTTP_CODE(202);
 

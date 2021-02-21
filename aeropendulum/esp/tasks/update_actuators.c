@@ -84,6 +84,6 @@ void update_actuators_task(void *pvParameter) {
                 last_actuator_duty = actuator_duty_value;
             }
         }
-        vTaskDelayUntil(&xLastWakeTime, ACTUATORS_UPDATE_RATE_ms / portTICK_PERIOD_MS);
+        vTaskDelayUntil(&xLastWakeTime, ACTUATORS_UPDATE_PERIOD_ms / portTICK_PERIOD_MS);
     }
 }

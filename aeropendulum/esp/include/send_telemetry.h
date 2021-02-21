@@ -22,8 +22,8 @@
 /*
  * Telemetry definitions
  * */
-#define MAX_TELEMETRY_RATE_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_TELEMETRY_RATE_ms 500
-#define MIN_TELEMETRY_RATE_ms 1
+#define MAX_TELEMETRY_PERIOD_ms 60000  /* a minute, kind of arbitrary */
+#define DEFAULT_TELEMETRY_PERIOD_ms 500
+#define MIN_TELEMETRY_PERIOD_ms 1
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */
