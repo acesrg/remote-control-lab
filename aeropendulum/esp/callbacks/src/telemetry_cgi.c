@@ -63,7 +63,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
         case GET: {
             int response_len;
             char response[LWIP_HTTPD_MAX_TAG_INSERT_LEN];
-            response_len = sprintf(response, "%d ms", TELEMETRY_PERIOD_ms);
+            response_len = sprintf(response, "%d", TELEMETRY_PERIOD_ms);
             load_ssi_data(response, response_len + 1);
             return "/response.ssi";
         }
