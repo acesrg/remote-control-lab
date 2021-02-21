@@ -31,6 +31,7 @@
 
 /* include callbacks */
 #include <callback_test.h>
+#include <propeller_cgi.h>
 #include <test_cgi.h>
 #include <telemetry_cgi.h>
 #include <logger_cgi.h>
@@ -108,6 +109,7 @@ void httpd_task(void *pvParameters) {
         {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
         {"/logger/level", (tCGIHandler) logger_level_cgi_handler},
         {"/telemetry/period", (tCGIHandler) telemetry_period_cgi_handler},
+        {"/propeller/pwm/status", (tCGIHandler) propeller_pwm_status_cgi_handler},
     };
 
 
