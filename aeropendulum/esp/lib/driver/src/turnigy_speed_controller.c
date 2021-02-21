@@ -26,12 +26,14 @@
 typedef struct pwm_config_t {
     uint16_t frequency_hz;
     uint16_t poweron_duty;
-    uint16_t pin;
+    uint8_t pin;
 } pwm_config_t;
 
 #define DEFAULT_DRIVER_PWM_PIN   14
 #define DEFAULT_DRIVER_PWM_FREQUENCY_HZ  100
 #define DEFAULT_DRIVER_PWM_POWERON_DUTY  0x1C2A
+#define DRIVER_PWM_COUNT    1
+#define DRIVER_PWM_REVERSE  false
 
 pwm_config_t driver_config = {
     .pin = DEFAULT_DRIVER_PWM_PIN,
@@ -40,10 +42,8 @@ pwm_config_t driver_config = {
 };
 
 retval_t turnigy_speed_controller_init_sequence() {
-    uint8_t pins[1];
     log_trace("Set PWM in pin %d", driver_config.pin);
-    pins[0] = driver_config.pin;
-    pwm_init(1, pins, false);
+    pwm_init(DRIVER_PWM_COUNT, &driver_config.pin, DRIVER_PWM_REVERSE);
 
     log_trace("Set PWM frequency to %d Hz", driver_config.frequency_hz);
     pwm_set_freq(driver_config.frequency_hz);
