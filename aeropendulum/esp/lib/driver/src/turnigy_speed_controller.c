@@ -32,6 +32,7 @@ typedef struct pwm_config_t {
 #define DEFAULT_DRIVER_PWM_PIN   14
 #define DEFAULT_DRIVER_PWM_FREQUENCY_HZ  100
 #define DEFAULT_DRIVER_PWM_POWERON_DUTY  0x1C2A
+#define DEFAULT_DRIVER_PWM_POWEROFF_DUTY  0x0001
 #define DRIVER_PWM_COUNT    1
 #define DRIVER_PWM_REVERSE  false
 
@@ -58,6 +59,9 @@ retval_t turnigy_speed_controller_init_sequence() {
 }
 
 retval_t turnigy_speed_controller_deinit_sequence() {
+    log_trace("Set PWM 0 duty");
+    pwm_set_duty(DEFAULT_DRIVER_PWM_POWEROFF_DUTY);
+
     log_trace("Stop PWM");
     pwm_stop();
 
