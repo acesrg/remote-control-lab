@@ -32,6 +32,7 @@
 #include <encoder.h>
 
 extern uint8_t URI_TASK;
+uint16_t TELEMETRY_PERIOD_ms = DEFAULT_TELEMETRY_PERIOD_ms;
 
 static SimpleJSONType sensor_db[2] = {{"angle", 0},
                                       {"error", 0}};
@@ -65,7 +66,7 @@ void send_telemetry_task(void *pvParameter) {
         tcp_output(pcb);
         UNLOCK_TCPIP_CORE();
 
-        vTaskDelayUntil(&xLastWakeTime, TELEMETRY_RATE_ms / portTICK_PERIOD_MS);
+        vTaskDelayUntil(&xLastWakeTime, TELEMETRY_PERIOD_ms / portTICK_PERIOD_MS);
         if (pcb == NULL || pcb->state != ESTABLISHED) {
             // when task stops mark as undefined
             URI_TASK = URI_UNDEF;

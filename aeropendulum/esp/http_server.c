@@ -32,6 +32,7 @@
 /* include callbacks */
 #include <callback_test.h>
 #include <test_cgi.h>
+#include <telemetry_cgi.h>
 #include <logger_cgi.h>
 #include <telemetry_callback.h>
 #include <ssi_utils.h>
@@ -106,6 +107,7 @@ void httpd_task(void *pvParameters) {
         {"/test", (tCGIHandler) test_cgi_handler},
         {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
         {"/logger/level", (tCGIHandler) logger_level_cgi_handler},
+        {"/telemetry/period", (tCGIHandler) telemetry_period_cgi_handler},
     };
 
 
