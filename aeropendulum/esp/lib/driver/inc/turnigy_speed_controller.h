@@ -16,9 +16,9 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <propeller_utils.h>
-#include <turnigy_speed_controller.h>
+#ifndef EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_
+#define EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_
+#include <retval.h>
 
-retval_t initialize_propeller(void) {
-    return turnigy_speed_controller_init_sequence();
-}
+retval_t turnigy_speed_controller_init_sequence(void);
+#endif /* EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_ */

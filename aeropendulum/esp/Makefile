@@ -1,5 +1,5 @@
 PROGRAM=http_server
-PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./third_party/log.c/src/ ./lib/driver/inc/ ./lib/cgi/inc/ ./lib/propeller/inc/
+PROGRAM_INC_DIR=./include ./lib/json/inc/ ./callbacks/inc/ ./third_party/log.c/src/ ./lib/driver/inc/ ./lib/cgi/inc/ ./lib/propeller/inc/ ./lib/retval/inc/
 PROGRAM_SRC_DIR=. ./lib/json/src/ ./callbacks/src/ ./tasks/ ./third_party/log.c/src/ ./lib/driver/src/ ./lib/cgi/src/ ./lib/propeller/src/
 
 EXTRA_CFLAGS=-DLWIP_HTTPD_CGI=1 -DLWIP_HTTPD_SSI=1 -I./fsdata -DLOG_USE_COLOR -DLWIP_HTTPD_SSI_INCLUDE_TAG=0

@@ -83,9 +83,8 @@ const char *propeller_pwm_status_cgi_handler(
             if (are_strings_equal(param_value, "initialized")) {
                 log_warn("Initializing propeller...");
 
-                /* call propeller initialization routine */
-                propellerUtilsRvType rv = RV_PROPELLER_OK;
-                if (rv != RV_PROPELLER_OK) {
+                retval_t rv = initialize_propeller();
+                if (rv != RV_OK) {
                     log_error("Failed propeller initialization.");
                     return HTTP_CODE(500);
                 } else {
@@ -96,8 +95,8 @@ const char *propeller_pwm_status_cgi_handler(
                 log_warn("Disabling propeller...");
 
                 /* call propeller de-initialization routine */
-                propellerUtilsRvType rv = RV_PROPELLER_OK;
-                if (rv != RV_PROPELLER_OK) {
+                retval_t rv = RV_OK;
+                if (rv != RV_OK) {
                     log_error("Failed propeller deinitialization.");
                     return HTTP_CODE(500);
                 } else {

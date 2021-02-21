@@ -18,10 +18,7 @@
  */
 #ifndef EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_
 #define EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_
+#include <retval.h>
 
-typedef enum propellerUtilsRvType {
-    RV_PROPELLER_OK,
-    RV_PROPELLER_FAILED,
-} propellerUtilsRvType;
-
+retval_t initialize_propeller(void);
 #endif /* EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_ */

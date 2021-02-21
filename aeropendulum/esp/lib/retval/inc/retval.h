@@ -16,9 +16,12 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <propeller_utils.h>
-#include <turnigy_speed_controller.h>
+#ifndef EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
+#define EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
 
-retval_t initialize_propeller(void) {
-    return turnigy_speed_controller_init_sequence();
-}
+typedef enum retval_t {
+    RV_OK,
+    RV_ERROR,
+} retval_t;
+
+#endif /* EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_ */
