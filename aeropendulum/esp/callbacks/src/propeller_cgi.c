@@ -89,6 +89,7 @@ const char *propeller_pwm_status_cgi_handler(
                     return HTTP_CODE(500);
                 } else {
                     log_warn("Propeller successfully initialized.");
+                    strcpy(propeller_pwm_status, "initialized");
                     return HTTP_CODE(202);
                 }
             } else if (are_strings_equal(param_value, "disabled")) {
@@ -100,6 +101,7 @@ const char *propeller_pwm_status_cgi_handler(
                     return HTTP_CODE(500);
                 } else {
                     log_warn("Propeller successfully disabled.");
+                    strcpy(propeller_pwm_status, "disabled");
                     return HTTP_CODE(202);
                 }
             } else {
