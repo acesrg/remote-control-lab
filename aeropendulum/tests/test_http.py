@@ -11,13 +11,11 @@ class HTTPTestCase(unittest.TestCase):
         retries = 3
         while retries >= 0:
             try:
-                self.con = HTTPConnection(AEROPENDULUM_IP_ADD, port=80, timeout=5)
+                self.con = HTTPConnection(AEROPENDULUM_IP_ADD, port=80, timeout=20)
                 break
             except timeout:
                 print("Timed out, retrying...")
                 retries -= 1
-
-
 
     def test_dummy_resource(self):
         VALUE = "hi_there"
