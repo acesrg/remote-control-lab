@@ -94,8 +94,7 @@ const char *propeller_pwm_status_cgi_handler(
             } else if (are_strings_equal(param_value, "disabled")) {
                 log_warn("Disabling propeller...");
 
-                /* call propeller de-initialization routine */
-                retval_t rv = RV_OK;
+                retval_t rv = deinitialize_propeller();
                 if (rv != RV_OK) {
                     log_error("Failed propeller deinitialization.");
                     return HTTP_CODE(500);

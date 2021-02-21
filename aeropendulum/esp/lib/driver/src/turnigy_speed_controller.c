@@ -56,3 +56,10 @@ retval_t turnigy_speed_controller_init_sequence() {
 
     return RV_OK;
 }
+
+retval_t turnigy_speed_controller_deinit_sequence() {
+    log_trace("Stop PWM");
+    pwm_stop();
+
+    return RV_OK;
+}

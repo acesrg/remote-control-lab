@@ -22,3 +22,7 @@
 retval_t initialize_propeller(void) {
     return turnigy_speed_controller_init_sequence();
 }
+
+retval_t deinitialize_propeller() {
+    return turnigy_speed_controller_deinit_sequence();
+}

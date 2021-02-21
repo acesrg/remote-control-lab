@@ -21,4 +21,6 @@
 #include <retval.h>
 
 retval_t turnigy_speed_controller_init_sequence(void);
+
+retval_t turnigy_speed_controller_deinit_sequence(void);
 #endif /* EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_ */

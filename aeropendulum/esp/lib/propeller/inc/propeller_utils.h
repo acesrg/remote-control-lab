@@ -21,4 +21,5 @@
 #include <retval.h>
 
 retval_t initialize_propeller(void);
+retval_t deinitialize_propeller(void);
 #endif /* EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_ */
