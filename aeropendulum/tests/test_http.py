@@ -1,4 +1,5 @@
 from esplab import HTTPConnection
+from socket import timeout
 import unittest
 
 # TODO: this should be more automatic
@@ -7,7 +8,16 @@ AEROPENDULUM_IP_ADD = "192.168.100.41"
 
 class HTTPTestCase(unittest.TestCase):
     def setUp(self):
-        self.con = HTTPConnection(AEROPENDULUM_IP_ADD, port=80, timeout=5)
+        retries = 3
+        while retries >= 0:
+            try:
+                self.con = HTTPConnection(AEROPENDULUM_IP_ADD, port=80, timeout=5)
+                break
+            except timeout:
+                print("Timed out, retrying...")
+                retries -= 1
+
+
 
     def test_dummy_resource(self):
         VALUE = "hi_there"
