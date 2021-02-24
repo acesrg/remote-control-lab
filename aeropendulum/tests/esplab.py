@@ -1,5 +1,7 @@
+from enum import Enum
 from http.client import HTTPConnection as _HTTPConnection
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+
 
 class HTTPConnection:
 
@@ -29,3 +31,37 @@ class HTTPConnection:
 
     def getresponse(self):
         return self.con.getresponse()
+
+
+class Resourcer(HTTPConnection):
+
+    def __init__(self, ip, port, timeout):
+        super().__init__(ip, port, timeout)
+
+    @staticmethod
+    def retval(mode, response):
+        if mode == "payload":
+            return response.read().decode().splitlines()[0]
+        elif mode == "code":
+            return response.code
+        else:
+            return response
+
+
+    def get(self, resource, retval_mode="payload"):
+        METHOD = "GET"
+        self.request(METHOD, resource)
+        return self.retval(retval_mode, self.getresponse())
+
+
+    def post(self, resource, value, retval_mode="code"):
+        METHOD = "POST"
+
+        parsed_resource = urlparse(resource)
+
+        q = urlencode([("value", value)])
+        resource_with_query = parsed_resource._replace(query=q)
+        unparsed_resource_with_query = urlunparse(resource_with_query)
+        self.request(METHOD, unparsed_resource_with_query)
+
+        return self.retval(retval_mode, self.getresponse())

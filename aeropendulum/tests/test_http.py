@@ -1,4 +1,4 @@
-from esplab import HTTPConnection
+from esplab import Resourcer
 from socket import timeout
 import unittest
 
@@ -11,57 +11,46 @@ class HTTPTestCase(unittest.TestCase):
         retries = 3
         while retries >= 0:
             try:
-                self.con = HTTPConnection(AEROPENDULUM_IP_ADD, port=80, timeout=20)
+                self.resourcer = Resourcer(AEROPENDULUM_IP_ADD, port=80, timeout=20)
                 break
             except timeout:
                 print("Timed out, retrying...")
                 retries -= 1
 
     def test_dummy_resource(self):
-        VALUE = "hi_there"
-        self.con.request("POST", "/test/resource?value=" + VALUE)
-        self.assertEqual(self.con.getresponse().code, 202)
+        RESOURCE = "/test/resource"
+        VALUE = "hithere"
+        response = self.resourcer.post(RESOURCE, VALUE)
+        self.assertEqual(response, 202)
 
-        self.con.request("GET", "/test/resource")
-        res = self.con.getresponse()
-        self.assertEqual(res.code, 200)
-        self.assertEqual(res.read().decode('utf-8').splitlines()[0], VALUE)
+        response = self.resourcer.get(RESOURCE)
+        self.assertEqual(response, VALUE)
 
     def test_logger(self):
+        RESOURCE = "/logger/level"
         LOG_LEVEL = "LOG_TRACE"
-        self.con.request("POST", "/logger/level?value=" + LOG_LEVEL)
-        self.assertEqual(self.con.getresponse().code, 202)
+        response = self.resourcer.post(RESOURCE, LOG_LEVEL)
+        self.assertEqual(response, 202)
 
-        self.con.request("GET", "/logger/level")
-        res = self.con.getresponse()
-        self.assertEqual(res.code, 200)
-        self.assertEqual(res.read().decode('utf-8').splitlines()[0], LOG_LEVEL)
+        response = self.resourcer.get(RESOURCE)
+        self.assertEqual(response, LOG_LEVEL)
 
         LOG_LEVEL = "LOG_INFO"
-        self.con.request("POST", "/logger/level?value=" + LOG_LEVEL)
-        self.assertEqual(self.con.getresponse().code, 202)
+        response = self.resourcer.post(RESOURCE, LOG_LEVEL)
+        self.assertEqual(response, 202)
 
-        self.con.request("GET", "/logger/level")
-        res = self.con.getresponse()
-        self.assertEqual(res.code, 200)
-        self.assertEqual(res.read().decode('utf-8').splitlines()[0], LOG_LEVEL)
+        response = self.resourcer.get(RESOURCE)
+        self.assertEqual(response, LOG_LEVEL)
 
     def test_telemetry_period(self):
-        DEFAULT_PERIOD = 500
-        self.con.request("GET", "/telemetry/period")
-        res = self.con.getresponse()
-        self.assertEqual(res.code, 200)
-        self.assertEqual(res.read().decode('utf-8').splitlines()[0], str(DEFAULT_PERIOD))
-
+        RESOURCE = "/telemetry/period"
         PERIOD = 20
-        self.con.request("POST", "/telemetry/period?value={}".format(PERIOD))
-        self.assertEqual(self.con.getresponse().code, 202)
+        response = self.resourcer.post(RESOURCE, PERIOD)
+        self.assertEqual(response, 202)
+
+        response = self.resourcer.get(RESOURCE)
+        self.assertEqual(int(response), PERIOD)
 
         DEFAULT_PERIOD = 500
-        self.con.request("GET", "/telemetry/period")
-        res = self.con.getresponse()
-        self.assertEqual(res.code, 200)
-        self.assertEqual(res.read().decode('utf-8').splitlines()[0], str(format(PERIOD)))
-
-        self.con.request("POST", "/telemetry/period?value={}".format(DEFAULT_PERIOD))
-        self.assertEqual(self.con.getresponse().code, 202)
+        response = self.resourcer.post(RESOURCE, DEFAULT_PERIOD)
+        self.assertEqual(response, 202)
