@@ -48,3 +48,11 @@ class HTTPTestCase(unittest.TestCase):
 
         DEFAULT_PERIOD = 500
         self._test_resources(RESOURCE, DEFAULT_PERIOD)
+
+    def test_propeller_pwm_init(self):
+        RESOURCE = "/propeller/pwm/status"
+        VALUE = "disabled"
+        self._test_resources(RESOURCE, VALUE)
+
+        VALUE = "initialized"
+        self._test_resources(RESOURCE, VALUE)
