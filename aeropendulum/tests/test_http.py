@@ -17,40 +17,34 @@ class HTTPTestCase(unittest.TestCase):
                 print("Timed out, retrying...")
                 retries -= 1
 
-    def test_dummy_resource(self):
-        RESOURCE = "/test/resource"
-        VALUE = "hithere"
+    def _test_resources(self, resource, value):
+        RESOURCE = resource
+        VALUE = value
+        value_type = type(value)
         response = self.resourcer.post(RESOURCE, VALUE)
         self.assertEqual(response, 202)
 
         response = self.resourcer.get(RESOURCE)
-        self.assertEqual(response, VALUE)
+        self.assertEqual(value_type(response), VALUE)
+
+
+    def test_dummy_resource(self):
+        RESOURCE = "/test/resource"
+        VALUE = "hithere"
+        self._test_resources(RESOURCE, VALUE)
 
     def test_logger(self):
         RESOURCE = "/logger/level"
         LOG_LEVEL = "LOG_TRACE"
-        response = self.resourcer.post(RESOURCE, LOG_LEVEL)
-        self.assertEqual(response, 202)
-
-        response = self.resourcer.get(RESOURCE)
-        self.assertEqual(response, LOG_LEVEL)
+        self._test_resources(RESOURCE, LOG_LEVEL)
 
         LOG_LEVEL = "LOG_INFO"
-        response = self.resourcer.post(RESOURCE, LOG_LEVEL)
-        self.assertEqual(response, 202)
-
-        response = self.resourcer.get(RESOURCE)
-        self.assertEqual(response, LOG_LEVEL)
+        self._test_resources(RESOURCE, LOG_LEVEL)
 
     def test_telemetry_period(self):
         RESOURCE = "/telemetry/period"
         PERIOD = 20
-        response = self.resourcer.post(RESOURCE, PERIOD)
-        self.assertEqual(response, 202)
-
-        response = self.resourcer.get(RESOURCE)
-        self.assertEqual(int(response), PERIOD)
+        self._test_resources(RESOURCE, PERIOD)
 
         DEFAULT_PERIOD = 500
-        response = self.resourcer.post(RESOURCE, DEFAULT_PERIOD)
-        self.assertEqual(response, 202)
+        self._test_resources(RESOURCE, DEFAULT_PERIOD)
