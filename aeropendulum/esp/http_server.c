@@ -83,10 +83,6 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
         log_info("Request for websocket stream");
         xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
         xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
-    } else if (!strcmp(uri, "/start_pwm")) {
-        URI_TASK = URI_START_PWM;
-        log_info("Request for propeller start");
-        xTaskCreate(&start_pwm_task, "start_pwm_task", 256, (void *) pcb, 2, NULL);
     } else if (!strcmp(uri, "/ping")) {
         URI_TASK = URI_PING;
         log_info("Request for ping");

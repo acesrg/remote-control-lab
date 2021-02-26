@@ -57,15 +57,3 @@ class WebsocketsTestCase(unittest.TestCase):
 
     def test_json_parsing(self):
         self.loop.run_until_complete(self.a_test_json_parsing())
-
-
-    async def a_test_pwm_start(self):
-        uri = "start_pwm"
-        websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-
-        time.sleep(2)
-
-        await websocket.close()
-
-    def test_pwm_start(self):
-        self.loop.run_until_complete(self.a_test_pwm_start())

@@ -31,29 +31,12 @@
 #define ENCODER_PIN_A       12
 #define ENCODER_PIN_B       13
 
-#define PROPELLER_PWM_PIN   14
-
-/**
- * Propeller default configs
- * */
-#define DEFAULT_PROPELLER_PWM_FREQUENCY_HZ  100
-#define DEFAULT_PROPELLER_PWM_POWERON_DUTY  0x1C2A
-
 enum URI_TASK {
     URI_UNDEF,
     URI_WS_STREAM,
-    URI_START_PWM,
     URI_PING,
     URI_PARSE_TEST,
 };
-
-typedef struct PwmConfigType {
-    uint16_t frequency_hz;
-    uint16_t poweron_duty;
-    uint16_t pin;
-} PwmConfigType;
-
-void start_pwm_task(void *pvParameter);
 
 void send_telemetry_task(void *pvParameter);
 
