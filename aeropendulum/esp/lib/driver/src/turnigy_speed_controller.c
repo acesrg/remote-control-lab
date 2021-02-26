@@ -18,8 +18,11 @@
  */
 #include <stdbool.h>
 
+#include <esp/gpio.h>
 #include <log.h>
 #include <pwm.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include <turnigy_speed_controller.h>
 
@@ -64,6 +67,33 @@ retval_t turnigy_speed_controller_deinit_sequence() {
 
     log_trace("Stop PWM");
     pwm_stop();
+
+    return RV_OK;
+}
+
+retval_t turnigy_speed_controller_update_pwm_duty(uint16_t duty) {
+    /*
+     * PWM workarround:
+     *
+     * It seems that updating the pwm during the duty cycle causes it to go down and
+     * inmediatly up again. This could produce unintended behavior, such as turning
+     * the PWM off at an specific time, that the motor driver would interpret as some
+     * new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
+     *
+     * To supress the possibility of unexpected commands making it to the PWM
+     * driver, the duty cycle is updated ONLY during PWM's low state.
+     *
+     * This is a workarround, the ideal behavior is that the pwm duty cycle updates at
+     * the beginning of a new cycle only. This doesn't happen here.
+     * */
+    while (gpio_read(driver_config.pin)) {
+        log_trace("waiting for duty cycle to end ...");
+        vTaskDelay(0.1 / (1000 * driver_config.frequency_hz * portTICK_PERIOD_MS));
+    }
+    log_trace("set actuator duty: 0x%04X", duty);
+    taskENTER_CRITICAL();
+    pwm_set_duty(duty);
+    taskEXIT_CRITICAL();
 
     return RV_OK;
 }

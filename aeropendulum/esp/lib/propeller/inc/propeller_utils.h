@@ -18,8 +18,12 @@
  */
 #ifndef EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_
 #define EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_
+#include <stdint.h>
+
 #include <retval.h>
 
 retval_t initialize_propeller(void);
 retval_t deinitialize_propeller(void);
+retval_t set_propeller_duty(uint16_t duty);
+
 #endif /* EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_ */

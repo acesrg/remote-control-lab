@@ -18,9 +18,13 @@
  */
 #ifndef EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_
 #define EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_
+#include <stdint.h>
+
 #include <retval.h>
 
 retval_t turnigy_speed_controller_init_sequence(void);
 
 retval_t turnigy_speed_controller_deinit_sequence(void);
+
+retval_t turnigy_speed_controller_update_pwm_duty(uint16_t duty);
 #endif /* EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_ */
