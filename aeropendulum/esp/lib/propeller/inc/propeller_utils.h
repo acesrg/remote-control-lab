@@ -22,8 +22,26 @@
 
 #include <retval.h>
 
+/**
+ * \brief   Initialize propeller driver.
+ * \return  retval_t: exit status
+ */
 retval_t initialize_propeller(void);
+
+/**
+ * \brief   De-initialize propeller driver.
+ * \return  retval_t: exit status
+ */
 retval_t deinitialize_propeller(void);
+
+/**
+ * \brief   Update propeller speed.
+ * \argument    duty: uint16_t value, representing the duty
+ *              percentage, assigned to the propeller driver.
+ *              TODO(marcotti): limit the duty to MAX and MIN, and
+ *              specify limits here.
+ * \return  retval_t: exit status
+ */
 retval_t set_propeller_duty(uint16_t duty);
 
 #endif /* EXAMPLES_PROJECT_LIB_PROPELLER_INC_PROPELLER_UTILS_H_ */

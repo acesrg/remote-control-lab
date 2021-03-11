@@ -22,9 +22,29 @@
 
 #include <retval.h>
 
+/**
+ * \brief   Initialize Turnigy speed controller.
+ * \note    Initialize the PWM pin connected to the
+ *          Turnigy driver, with the specified sequence
+ *          that sets it up.
+ * \return  retval_t: exit status
+ */
 retval_t turnigy_speed_controller_init_sequence(void);
 
+/**
+ * \brief   De-initialize Turnigy speed controller.
+ * \note    Turn off the PWM driving the Turnigy
+ *          controller.
+ * \return  retval_t: exit status
+ */
 retval_t turnigy_speed_controller_deinit_sequence(void);
 
+/**
+ * \brief   Update turnigy speed controller duty.
+ * \argument    duty: uint16_t value, representing the duty
+ *              percentage, being 0xFFFF equal 100% and
+ *              0x0000 equal 0%.
+ * \return  retval_t: exit status
+ */
 retval_t turnigy_speed_controller_update_pwm_duty(uint16_t duty);
 #endif /* EXAMPLES_PROJECT_LIB_DRIVER_INC_TURNIGY_SPEED_CONTROLLER_H_ */

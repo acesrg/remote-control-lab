@@ -50,10 +50,31 @@ typedef enum cgiUtilsRvType {
     VALUE_NOT_UPDATED,
 } cgiUtilsRvType;
 
+/**
+ * \brief   Compares two strings.
+ * \param   str1 pointer to a const char
+ * \param   str2 pointer to a const char
+ * \retval 	bool true if strings are equal, otherwise false
+ */
 bool are_strings_equal(const char *str1, const char *str2);
 
+/**
+ * \brief   Decodes an string into an HTTP verb.
+ * \param   verb Pointer to a const char
+ * \retval 	http_verb_t An http-verb, like GET, POST, PUT, DELETE or UNSUPPORTED
+ */
 http_verb_t decode_http_verb(const char *verb);
 
+/**
+ * \brief   Retrieves parameters from an URI.
+ * \param[in]   num_params An integer specifying the quantity of params in the URI
+ * \param[in]   params A pointer to an array of strings, containing the uri params
+ * \param[in]   params A pointer to an array of strings, containing the uri values
+ * \param[in]   num_available_params An integer, the quantity of params expected
+ * \param[out]  available_params, An special struct with the parameters and the
+ *              corresponding placeholders for the param values to be written
+ * \retval
+ */
 cgiUtilsRvType decode_uri_params(
     int num_params,
     char *params[],
