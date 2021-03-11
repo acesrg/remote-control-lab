@@ -23,4 +23,10 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
 
 const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
 
+const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+
+const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+
+const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+
 #endif /* EXAMPLES_PROJECT_CALLBACKS_INC_TEST_CGI_H_ */

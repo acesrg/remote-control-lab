@@ -103,6 +103,9 @@ void httpd_task(void *pvParameters) {
     tCGI pCGIs[] = {
         {"/test", (tCGIHandler) test_cgi_handler},
         {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
+        {"/test/parent_resource", (tCGIHandler) test_parent_resource_cgi_handler},
+        {"/test/parent_resource/child_a", (tCGIHandler) test_child_a_resource_cgi_handler},
+        {"/test/parent_resource/child_b", (tCGIHandler) test_child_b_resource_cgi_handler},
         {"/logger/level", (tCGIHandler) logger_level_cgi_handler},
         {"/telemetry/period", (tCGIHandler) telemetry_period_cgi_handler},
         {"/propeller/pwm/status", (tCGIHandler) propeller_pwm_status_cgi_handler},
