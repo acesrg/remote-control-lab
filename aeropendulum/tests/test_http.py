@@ -1,5 +1,6 @@
 from esplab import Resourcer
 from socket import timeout
+import json
 import unittest
 
 # TODO: this should be more automatic
@@ -56,3 +57,21 @@ class HTTPTestCase(unittest.TestCase):
 
         VALUE = "initialized"
         self._test_resources(RESOURCE, VALUE)
+
+    def test_child_resources(self):
+        RESOURCE = "/test/parent_resource/child_a"
+        VALUE_A = "0xFAFA"
+        self._test_resources(RESOURCE, VALUE_A)
+
+        RESOURCE = "/test/parent_resource/child_b"
+        VALUE_B = "0x0EFE"
+        self._test_resources(RESOURCE, VALUE_B)
+
+
+        RESOURCE = "/test/parent_resource"
+        response = self.resourcer.get(RESOURCE)
+
+        json_data = {"child_a": VALUE_A, "child_b": VALUE_B}
+        expected = json.dumps(json_data)
+
+        self.assertEqual(response, expected)
