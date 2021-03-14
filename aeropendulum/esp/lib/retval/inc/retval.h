@@ -22,6 +22,7 @@
 typedef enum retval_t {
     RV_OK,
     RV_ERROR,
+    RV_EXTERNAL_ERROR,
 } retval_t;
 
 #endif /* EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_ */

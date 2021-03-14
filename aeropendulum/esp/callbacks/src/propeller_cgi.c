@@ -35,7 +35,7 @@ const char *propeller_pwm_status_cgi_handler(
     uriParamsType propeller_pwm_cgi_params[2] = {{"verb", "0", false},
                                           {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
         iNumParams,
@@ -44,7 +44,7 @@ const char *propeller_pwm_status_cgi_handler(
         sizeof(propeller_pwm_cgi_params) / sizeof(propeller_pwm_cgi_params[0]),
         propeller_pwm_cgi_params);
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(500);
     }
 
@@ -56,7 +56,7 @@ const char *propeller_pwm_status_cgi_handler(
             propeller_pwm_cgi_params,
             sizeof(propeller_pwm_cgi_params) / sizeof(propeller_pwm_cgi_params[0]));
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(400);
     }
 
@@ -74,7 +74,7 @@ const char *propeller_pwm_status_cgi_handler(
                     propeller_pwm_cgi_params,
                     sizeof(propeller_pwm_cgi_params) / sizeof(propeller_pwm_cgi_params[0]));
 
-            if (rv != CGI_OK) {
+            if (rv != RV_OK) {
                 return HTTP_CODE(400);
             }
 

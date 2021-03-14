@@ -33,7 +33,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
     uriParamsType telemetry_cgi_params[2] = {{"verb", "0", false},
                                              {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
         iNumParams,
@@ -42,7 +42,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
         sizeof(telemetry_cgi_params) / sizeof(telemetry_cgi_params[0]),
         telemetry_cgi_params);
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(500);
     }
 
@@ -54,7 +54,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
             telemetry_cgi_params,
             sizeof(telemetry_cgi_params) / sizeof(telemetry_cgi_params[0]));
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(400);
     }
 
@@ -76,7 +76,7 @@ const char *telemetry_period_cgi_handler(int iIndex, int iNumParams, char *pcPar
                     telemetry_cgi_params,
                     sizeof(telemetry_cgi_params) / sizeof(telemetry_cgi_params[0]));
 
-            if (rv != CGI_OK) {
+            if (rv != RV_OK) {
                 return HTTP_CODE(400);
             }
 

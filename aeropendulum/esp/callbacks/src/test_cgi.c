@@ -34,7 +34,7 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
     uriParamsType test_cgi_params[2] = {{"verb", "0", false},
                                         {"say", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
                iNumParams,
@@ -42,7 +42,7 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
                (char **) pcValue,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]),
                test_cgi_params);
-    if (rv != CGI_OK) goto labeled_return;
+    if (rv != RV_OK) goto labeled_return;
 
     char param_verb[URI_VARIABLE_VALUE_MAX_LEN];
 
@@ -51,7 +51,7 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
                param_verb,
                test_cgi_params,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-    if (rv != CGI_OK) goto labeled_return; /*< this param is mandatory*/
+    if (rv != RV_OK) goto labeled_return; /*< this param is mandatory*/
 
 
     switch (decode_http_verb(param_verb)) {
@@ -62,7 +62,7 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
                            say_what,
                            test_cgi_params,
                            sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-                if (rv != CGI_OK) goto labeled_return;
+                if (rv != RV_OK) goto labeled_return;
 
                 if (SYSTEM_LOG_LEVEL > LOG_INFO) {
                     log_set_level(LOG_INFO);
@@ -90,13 +90,13 @@ const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *
      * */
     labeled_return:
     switch (rv) {
-        case CGI_OK:
+        case RV_OK:
             return HTTP_CODE(200);
 
-        case VARIABLE_NOT_FOUND:
+        case RV_ERROR:
             return HTTP_CODE(500);
 
-        case VALUE_NOT_UPDATED:
+        case RV_EXTERNAL_ERROR:
             return HTTP_CODE(400);
 
         default:
@@ -108,7 +108,7 @@ const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[
     uriParamsType test_cgi_params[2] = {{"verb", "0", false},
                                         {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
                iNumParams,
@@ -116,7 +116,7 @@ const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[
                (char **) pcValue,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]),
                test_cgi_params);
-    if (rv != CGI_OK) goto labeled_return;
+    if (rv != RV_OK) goto labeled_return;
 
     char param_verb[URI_VARIABLE_VALUE_MAX_LEN];
 
@@ -125,7 +125,7 @@ const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[
                param_verb,
                test_cgi_params,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-    if (rv != CGI_OK) goto labeled_return; /*< this param is mandatory*/
+    if (rv != RV_OK) goto labeled_return; /*< this param is mandatory*/
 
 
     switch (decode_http_verb(param_verb)) {
@@ -141,7 +141,7 @@ const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[
                            param_value,
                            test_cgi_params,
                            sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-                if (rv != CGI_OK) goto labeled_return; /*< mandatory for post*/
+                if (rv != RV_OK) goto labeled_return; /*< mandatory for post*/
                 snprintf(dummy_test_resource, sizeof(param_value), param_value);
                 return HTTP_CODE(202);
             }
@@ -159,13 +159,13 @@ const char *test_resource_cgi_handler(int iIndex, int iNumParams, char *pcParam[
      * */
     labeled_return:
     switch (rv) {
-        case CGI_OK:
+        case RV_OK:
             return HTTP_CODE(200);
 
-        case VARIABLE_NOT_FOUND:
+        case RV_ERROR:
             return HTTP_CODE(500);
 
-        case VALUE_NOT_UPDATED:
+        case RV_EXTERNAL_ERROR:
             return HTTP_CODE(400);
 
         default:
@@ -177,7 +177,7 @@ const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *p
     uriParamsType test_cgi_params[2] = {{"verb", "0", false},
                                         {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
                iNumParams,
@@ -185,7 +185,7 @@ const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *p
                (char **) pcValue,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]),
                test_cgi_params);
-    if (rv != CGI_OK) goto labeled_return;
+    if (rv != RV_OK) goto labeled_return;
 
     char param_verb[URI_VARIABLE_VALUE_MAX_LEN];
 
@@ -194,7 +194,7 @@ const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *p
                param_verb,
                test_cgi_params,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-    if (rv != CGI_OK) goto labeled_return; /*< this param is mandatory*/
+    if (rv != RV_OK) goto labeled_return; /*< this param is mandatory*/
 
 
     switch (decode_http_verb(param_verb)) {
@@ -230,13 +230,13 @@ const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *p
      * */
     labeled_return:
     switch (rv) {
-        case CGI_OK:
+        case RV_OK:
             return HTTP_CODE(200);
 
-        case VARIABLE_NOT_FOUND:
+        case RV_ERROR:
             return HTTP_CODE(500);
 
-        case VALUE_NOT_UPDATED:
+        case RV_EXTERNAL_ERROR:
             return HTTP_CODE(400);
 
         default:
@@ -248,7 +248,7 @@ const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *
     uriParamsType test_cgi_params[2] = {{"verb", "0", false},
                                         {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
                iNumParams,
@@ -256,7 +256,7 @@ const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *
                (char **) pcValue,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]),
                test_cgi_params);
-    if (rv != CGI_OK) goto labeled_return;
+    if (rv != RV_OK) goto labeled_return;
 
     char param_verb[URI_VARIABLE_VALUE_MAX_LEN];
 
@@ -265,7 +265,7 @@ const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *
                param_verb,
                test_cgi_params,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-    if (rv != CGI_OK) goto labeled_return; /*< this param is mandatory*/
+    if (rv != RV_OK) goto labeled_return; /*< this param is mandatory*/
 
 
     switch (decode_http_verb(param_verb)) {
@@ -283,7 +283,7 @@ const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *
                            param_value,
                            test_cgi_params,
                            sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-                if (rv != CGI_OK) goto labeled_return; /*< mandatory for post*/
+                if (rv != RV_OK) goto labeled_return; /*< mandatory for post*/
                 global_resource_child_a = strtoul(param_value, NULL, 16);
                 return HTTP_CODE(202);
             }
@@ -301,13 +301,13 @@ const char *test_child_a_resource_cgi_handler(int iIndex, int iNumParams, char *
      * */
     labeled_return:
     switch (rv) {
-        case CGI_OK:
+        case RV_OK:
             return HTTP_CODE(200);
 
-        case VARIABLE_NOT_FOUND:
+        case RV_ERROR:
             return HTTP_CODE(500);
 
-        case VALUE_NOT_UPDATED:
+        case RV_EXTERNAL_ERROR:
             return HTTP_CODE(400);
 
         default:
@@ -319,7 +319,7 @@ const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *
     uriParamsType test_cgi_params[2] = {{"verb", "0", false},
                                         {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
                iNumParams,
@@ -327,7 +327,7 @@ const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *
                (char **) pcValue,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]),
                test_cgi_params);
-    if (rv != CGI_OK) goto labeled_return;
+    if (rv != RV_OK) goto labeled_return;
 
     char param_verb[URI_VARIABLE_VALUE_MAX_LEN];
 
@@ -336,7 +336,7 @@ const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *
                param_verb,
                test_cgi_params,
                sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-    if (rv != CGI_OK) goto labeled_return; /*< this param is mandatory*/
+    if (rv != RV_OK) goto labeled_return; /*< this param is mandatory*/
 
 
     switch (decode_http_verb(param_verb)) {
@@ -354,7 +354,7 @@ const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *
                            param_value,
                            test_cgi_params,
                            sizeof(test_cgi_params) / sizeof(test_cgi_params[0]));
-                if (rv != CGI_OK) goto labeled_return; /*< mandatory for post*/
+                if (rv != RV_OK) goto labeled_return; /*< mandatory for post*/
                 global_resource_child_b = strtoul(param_value, NULL, 16);
                 return HTTP_CODE(202);
             }
@@ -372,13 +372,13 @@ const char *test_child_b_resource_cgi_handler(int iIndex, int iNumParams, char *
      * */
     labeled_return:
     switch (rv) {
-        case CGI_OK:
+        case RV_OK:
             return HTTP_CODE(200);
 
-        case VARIABLE_NOT_FOUND:
+        case RV_ERROR:
             return HTTP_CODE(500);
 
-        case VALUE_NOT_UPDATED:
+        case RV_EXTERNAL_ERROR:
             return HTTP_CODE(400);
 
         default:

@@ -32,15 +32,15 @@ int32_t ssi_handler(int32_t iIndex, char *pcInsert, int32_t iInsertLen) {
     return (strlen(pcInsert));
 }
 
-ssiUtilsRvType load_ssi_data(const char *str, size_t str_len) {
+retval_t load_ssi_data(const char *str, size_t str_len) {
     if (str_len > LWIP_HTTPD_MAX_TAG_INSERT_LEN) {
         log_error(
             "SSI too large! Max len is: %d, given string len is %d",
             LWIP_HTTPD_MAX_TAG_INSERT_LEN,
             str_len);
-        return STRING_TOO_LARGE;
+        return RV_ERROR;
     }
     log_trace("String written to global variable");
     snprintf(ssi_string, str_len, str);
-    return SSI_OK;
+    return RV_OK;
 }

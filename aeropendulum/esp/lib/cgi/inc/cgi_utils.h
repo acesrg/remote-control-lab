@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <retval.h>
+
 #define HTTP_CODE(CODE) ("/" #CODE ".txt")
 
 
@@ -43,18 +45,11 @@ typedef struct uriParamsType {
     bool updated;
 } uriParamsType;
 
-
-typedef enum cgiUtilsRvType {
-    CGI_OK,
-    VARIABLE_NOT_FOUND,
-    VALUE_NOT_UPDATED,
-} cgiUtilsRvType;
-
 bool are_strings_equal(const char *str1, const char *str2);
 
 http_verb_t decode_http_verb(const char *verb);
 
-cgiUtilsRvType decode_uri_params(
+retval_t decode_uri_params(
     int num_params,
     char *params[],
     char *values[],
@@ -62,7 +57,7 @@ cgiUtilsRvType decode_uri_params(
     uriParamsType *available_params
 );
 
-cgiUtilsRvType uri_param_read(
+retval_t uri_param_read(
     const char *param,
     char *val,
     uriParamsType *params,

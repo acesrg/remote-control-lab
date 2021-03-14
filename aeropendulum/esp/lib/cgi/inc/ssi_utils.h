@@ -22,13 +22,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum ssiUtilsRvType {
-    SSI_OK,
-    STRING_TOO_LARGE,
-} ssiUtilsRvType;
-
+#include <retval.h>
 
 int32_t ssi_handler(int32_t iIndex, char *pcInsert, int32_t iInsertLen);
 
-ssiUtilsRvType load_ssi_data(const char *str, size_t str_len);
+retval_t load_ssi_data(const char *str, size_t str_len);
 #endif  /* EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_ */
