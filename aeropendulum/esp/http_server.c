@@ -16,27 +16,38 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/* standard */
+#include <string.h>
+
+/* third party libs */
+#include <FreeRTOS.h>
+#include <semphr.h>
+#include <task.h>
 #include <espressif/esp_common.h>
 #include <espressif/user_interface.h>
-#include <esp8266.h>
-#include <esp/uart.h>
-#include <string.h>
-#include <stdio.h>
-#include <FreeRTOS.h>
-#include <task.h>
-#include <semphr.h>
-#include <ssid_config.h>
 #include <httpd/httpd.h>
-#include <http_server.h>
+#include <esp/uart.h>
 
-/* include callbacks */
-#include <callback_test.h>
-#include <propeller_cgi.h>
-#include <test_cgi.h>
-#include <telemetry_cgi.h>
-#include <logger_cgi.h>
-#include <telemetry_callback.h>
+/* third party local libs */
+#include <log.h>
+
+/* local libs */
 #include <ssi_utils.h>
+
+/* project tasks */
+#include <send_telemetry.h>
+#include <update_actuators.h>
+
+/* project callbacks/cgi */
+#include <logger_cgi.h>
+#include <propeller_cgi.h>
+#include <telemetry_callback.h>
+#include <telemetry_cgi.h>
+#include <test_cgi.h>
+
+/* configuration includes */
+#include <pinout_configuration.h>
+#include <private_ssid_config.h>
 
 uint8_t SYSTEM_LOG_LEVEL = LOG_WARN;
 
@@ -137,8 +148,8 @@ void user_init(void) {
     sdk_wifi_station_connect();
 
     /* turn off LED */
-    gpio_enable(LED_PIN, GPIO_OUTPUT);
-    gpio_write(LED_PIN, true);
+    gpio_enable(ONBOARD_LED_PIN, GPIO_OUTPUT);
+    gpio_write(ONBOARD_LED_PIN, true);
 
     /* initialize tasks */
     xTaskCreate(&httpd_task, "HTTP Daemon", 256, NULL, 2, NULL);

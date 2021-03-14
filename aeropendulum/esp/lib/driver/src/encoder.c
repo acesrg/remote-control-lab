@@ -16,8 +16,33 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <encoder.h>
+#include <esp8266.h>
+
+#include <log.h>
 #include <json_parser.h>
+
+#include <encoder.h>
+
+typedef struct EncoderObjectType {
+    uint8_t pin_a;
+    uint8_t pin_b;
+    size_t  last_state;
+    uint16_t value;
+} EncoderObjectType;
+
+typedef enum EncoderEventType {
+    NO_MEASURE,
+    PIN_A_RISE,
+    PIN_B_RISE,
+    PIN_A_FALL,
+    PIN_B_FALL
+} EncoderEventType;
+
+#define INCREMENT (uint8_t) (PIN_B_RISE - PIN_A_RISE)
+#define INCREMENT_ (uint8_t) (PIN_A_RISE - PIN_B_FALL)
+
+#define DECREMENT (uint8_t) (PIN_A_RISE - PIN_B_RISE)
+#define DECREMENT_ (uint8_t) (PIN_B_FALL - PIN_A_RISE)
 
 /* globals to be used by isr */
 EncoderObjectType encoder = {0, 0, NO_MEASURE, 0};
@@ -87,7 +112,7 @@ EncoderEventType detect_event_nature(uint8_t gpio_num) {
  *      counter should be incremented, decremented or
  *      kept as is.
  *
- * \param gpio_num: the pin number 
+ * \param gpio_num: the pin number
  **/
 void encoder_intr_handler(uint8_t gpio_num) {
     EncoderEventType current_event_nature = detect_event_nature(gpio_num);

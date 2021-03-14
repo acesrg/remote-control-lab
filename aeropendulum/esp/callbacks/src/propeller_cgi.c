@@ -24,8 +24,6 @@
 #include <ssi_utils.h>
 #include <propeller_utils.h>
 
-#include <propeller_cgi.h>
-
 char propeller_pwm_status[URI_VARIABLE_VALUE_MAX_LEN] = "disabled";
 
 const char *propeller_pwm_status_cgi_handler(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marco Miretti.
+ * Copyright 2021 Marco Miretti.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +16,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
-#define EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
+#ifndef EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
+#define EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
 
-/*
- * Telemetry definitions
- * */
-#define MAX_TELEMETRY_PERIOD_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_TELEMETRY_PERIOD_ms 500
-#define MIN_TELEMETRY_PERIOD_ms 1
+/**
+ * Pinout for the ESP8266 D1 MINI
+ * https://user-images.githubusercontent.com/26353057/87876217-f3333a00-c9ac-11ea-9a11-893db497dc48.png
+ */
+/*******************************
+ *      PIN DESCRIPTION     PIN
+ *******************************/
+#define ONBOARD_LED_PIN     2
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */
+#define ENCODER_PIN_A       12
+#define ENCODER_PIN_B       13
+
+#endif /* EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_ */

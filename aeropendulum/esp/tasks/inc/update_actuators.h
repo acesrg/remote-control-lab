@@ -16,23 +16,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_
-#define EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_
+#ifndef EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
+#define EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
 
-#include <log.h>
-
-
-/**
- * Pinout for the ESP8266 D1 MINI
- * https://user-images.githubusercontent.com/26353057/87876217-f3333a00-c9ac-11ea-9a11-893db497dc48.png
- */
-#define LED_PIN             2
-
-#define ENCODER_PIN_A       12
-#define ENCODER_PIN_B       13
-
-void send_telemetry_task(void *pvParameter);
+/*
+ * Telemetry definitions
+ * */
+#define MAX_ACTUATORS_PERIOD_ms 60000  /* a minute, kind of arbitrary */
+#define DEFAULT_ACTUATORS_UPDATE_PERIOD_ms 50
+#define MIN_ACTUATORS_PERIOD_ms 1
 
 void update_actuators_task(void *pvParameter);
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_ */
+#endif /* EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_ */

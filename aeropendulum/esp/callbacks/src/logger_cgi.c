@@ -18,10 +18,10 @@
  */
 #include <string.h>
 
-#include <logger_cgi.h>
+#include <log.h>
+
 #include <cgi_utils.h>
 #include <ssi_utils.h>
-#include <log.h>
 
 extern uint8_t SYSTEM_LOG_LEVEL;
 

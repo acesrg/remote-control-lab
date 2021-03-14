@@ -16,12 +16,13 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <espressif/esp_common.h>
-#include <esp8266.h>
 #include <string.h>
-#include <stdio.h>
-#include <json_parser.h>
+#include <stdlib.h>
 
+#include <jsmn.h>
+#include <log.h>
+
+#include <json_parser.h>
 
 /**
  * \brief       Takes json argument (float) given json string and jsmn token

@@ -19,10 +19,7 @@
 #ifndef EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_
 #define EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_
 
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <string.h>
-#include <stdio.h>
+#include <tcp.h>
 
 typedef enum CallbackRvType {
     CALLBACK_OK,

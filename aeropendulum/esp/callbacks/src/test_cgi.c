@@ -18,12 +18,12 @@
  */
 #include <test_cgi.h>
 
+#include <log.h>
 #include <httpd/httpd.h>
 
 #include <cgi_utils.h>
 #include <ssi_utils.h>
 #include <json_parser.h>
-#include <log.h>
 
 extern uint8_t SYSTEM_LOG_LEVEL;
 static char dummy_test_resource[LWIP_HTTPD_MAX_TAG_INSERT_LEN];

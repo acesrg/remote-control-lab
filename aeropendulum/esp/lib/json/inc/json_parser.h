@@ -19,9 +19,6 @@
 #ifndef EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 #define EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 
-#include <jsmn.h>
-#include <log.h>
-
 #define MAX_ACTUATOR_TOKENS 8
 #define TOKEN_NAME_MAX_LEN  16
 #define TOKEN_FLOAT_MAX_LEN 16

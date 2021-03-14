@@ -16,20 +16,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <esp/uart.h>
 #include <string.h>
-#include <stdio.h>
+
 #include <FreeRTOS.h>
-#include <task.h>
 #include <semphr.h>
-#include <ssid_config.h>
+#include <task.h>
+#include <tcp.h>
 #include <httpd/httpd.h>
-#include <http_server.h>
-#include <send_telemetry.h>
-#include <json_parser.h>
+
+#include <log.h>
+
 #include <encoder.h>
+#include <json_parser.h>
+
+#include <send_telemetry.h>
+
+#include <pinout_configuration.h>
 
 uint16_t TELEMETRY_PERIOD_ms = DEFAULT_TELEMETRY_PERIOD_ms;
 

@@ -20,12 +20,16 @@
 #include <semphr.h>
 #include <task.h>
 
+#include <log.h>
+
 #include <json_parser.h>
 #include <propeller_utils.h>
 
-#define ACTUATORS_UPDATE_PERIOD_ms 50
+#include <update_actuators.h>
+
 
 extern SemaphoreHandle_t xMutex_actuator_data;
+uint16_t ACTUATORS_UPDATE_PERIOD_ms = DEFAULT_ACTUATORS_UPDATE_PERIOD_ms;
 
 SimpleJSONType actuator_db[1] = {{"duty", 0}};
 

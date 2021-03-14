@@ -25,7 +25,6 @@
 #include <cgi_utils.h>
 #include <ssi_utils.h>
 
-#include <telemetry_cgi.h>
 #include <send_telemetry.h>
 
 extern uint16_t TELEMETRY_PERIOD_ms;
