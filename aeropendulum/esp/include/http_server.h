@@ -31,19 +31,8 @@
 #define ENCODER_PIN_A       12
 #define ENCODER_PIN_B       13
 
-enum URI_TASK {
-    URI_UNDEF,
-    URI_WS_STREAM,
-    URI_PING,
-    URI_PARSE_TEST,
-};
-
 void send_telemetry_task(void *pvParameter);
 
 void update_actuators_task(void *pvParameter);
-
-void ping_task(void *pvParameter);
-
-void test_task(void *pvParameter);
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_ */

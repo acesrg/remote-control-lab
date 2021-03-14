@@ -38,8 +38,6 @@
 #include <telemetry_callback.h>
 #include <ssi_utils.h>
 
-// TODO(marcotti): this should be some kind of pointer
-uint8_t URI_TASK = URI_UNDEF;
 uint8_t SYSTEM_LOG_LEVEL = LOG_WARN;
 
 /*
@@ -55,23 +53,12 @@ SemaphoreHandle_t xMutex_sensor_data;
  * as possible.
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
-    if (URI_TASK == URI_WS_STREAM) {
-        log_trace("received ws stream callback, someone is talking");
-        CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
-        if (rv == CALLBACK_OK)
-            log_trace("ws stream callback handled");
-        else
-            log_error("ws stream callback exited with error status: %d", rv);
-    } else if (URI_TASK == URI_PARSE_TEST) {
-        log_info("received test callback");
-        TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
-        if (rv == TEST_OK)
-            log_info("test: everything of from this end");
-        else
-            log_error("test: something went wrong");
-    } else {
-        log_error("callback method unrecognized %d", URI_TASK);
-    }
+    log_trace("received ws stream callback, someone is talking");
+    CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
+    if (rv == CALLBACK_OK)
+        log_trace("ws stream callback handled");
+    else
+        log_error("ws stream callback exited with error status: %d", rv);
 }
 
 /**
@@ -79,18 +66,9 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
  */
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/stream")) {
-        URI_TASK = URI_WS_STREAM;
         log_info("Request for websocket stream");
         xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
         xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
-    } else if (!strcmp(uri, "/ping")) {
-        URI_TASK = URI_PING;
-        log_info("Request for ping");
-        xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
-    } else if (!strcmp(uri, "/test")) {
-        URI_TASK = URI_PARSE_TEST;
-        log_info("Test task");
-        xTaskCreate(&test_task, "test_task", 256, (void *) pcb, 2, NULL);
     }
     log_trace("task %s created", uri);
 }
