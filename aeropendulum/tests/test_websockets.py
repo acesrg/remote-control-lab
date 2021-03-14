@@ -21,16 +21,6 @@ class WebsocketsTestCase(unittest.TestCase):
         websocket = await websockets.connect(url)
         return websocket
 
-    async def a_test_ping(self):
-        uri = "ping"
-        websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-        response = await websocket.recv()
-        await websocket.close()
-        self.assertEqual(response, "pong")
-
-    def test_ping(self):
-        self.loop.run_until_complete(self.a_test_ping())
-
     async def a_test_telemetry_received(self):
         uri = "stream"
         websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
@@ -43,29 +33,3 @@ class WebsocketsTestCase(unittest.TestCase):
 
     def test_telemetry_received(self):
         self.loop.run_until_complete(self.a_test_telemetry_received())
-
-    async def a_test_json_parsing(self):
-        uri = "test"
-        websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-        await websocket.send(self.message)
-        response = await websocket.recv()
-        await websocket.close()
-
-        parsed_response = json.loads(response)
-
-        self.assertEqual(parsed_response, self.json_data)
-
-    def test_json_parsing(self):
-        self.loop.run_until_complete(self.a_test_json_parsing())
-
-
-    async def a_test_pwm_start(self):
-        uri = "start_pwm"
-        websocket = await self.connect(AEROPENDULUM_IP_ADD, uri)
-
-        time.sleep(2)
-
-        await websocket.close()
-
-    def test_pwm_start(self):
-        self.loop.run_until_complete(self.a_test_pwm_start())

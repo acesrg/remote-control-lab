@@ -16,15 +16,13 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_
-#define EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_
+#ifndef EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
+#define EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
 
-#include <stddef.h>
-#include <stdint.h>
+typedef enum retval_t {
+    RV_OK,
+    RV_ERROR,
+    RV_EXTERNAL_ERROR,
+} retval_t;
 
-#include <retval.h>
-
-int32_t ssi_handler(int32_t iIndex, char *pcInsert, int32_t iInsertLen);
-
-retval_t load_ssi_data(const char *str, size_t str_len);
-#endif  /* EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_ */
+#endif /* EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_ */

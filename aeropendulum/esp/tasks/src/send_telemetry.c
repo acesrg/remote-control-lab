@@ -16,26 +16,27 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <esp/uart.h>
 #include <string.h>
-#include <stdio.h>
-#include <FreeRTOS.h>
-#include <task.h>
-#include <semphr.h>
-#include <ssid_config.h>
-#include <httpd/httpd.h>
-#include <http_server.h>
-#include <send_telemetry.h>
-#include <json_parser.h>
-#include <encoder.h>
 
-extern uint8_t URI_TASK;
+#include <FreeRTOS.h>
+#include <semphr.h>
+#include <task.h>
+#include <tcp.h>
+#include <httpd/httpd.h>
+
+#include <log.h>
+
+#include <encoder.h>
+#include <json_parser.h>
+
+#include <send_telemetry.h>
+
+#include <pinout_configuration.h>
+
 uint16_t TELEMETRY_PERIOD_ms = DEFAULT_TELEMETRY_PERIOD_ms;
 
-static SimpleJSONType sensor_db[2] = {{"angle", 0},
-                                      {"error", 0}};
+static simple_json_t sensor_db[2] = {{"angle", 0},
+                                     {"error", 0}};
 
 void send_telemetry_task(void *pvParameter) {
     log_trace("task started");
@@ -54,8 +55,8 @@ void send_telemetry_task(void *pvParameter) {
         char composed_json[JSON_SENSOR_MAX_LEN];
         size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
 
-        ParseRvType compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
-        if (compose_rv != PARSE_OK) {
+        retval_t compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
+        if (compose_rv != RV_OK) {
             log_error("compose error");
         }
 
@@ -68,8 +69,6 @@ void send_telemetry_task(void *pvParameter) {
 
         vTaskDelayUntil(&xLastWakeTime, TELEMETRY_PERIOD_ms / portTICK_PERIOD_MS);
         if (pcb == NULL || pcb->state != ESTABLISHED) {
-            // when task stops mark as undefined
-            URI_TASK = URI_UNDEF;
             log_trace("disconected, delete task");
             vTaskDelete(NULL);
         }

@@ -44,7 +44,7 @@ http_verb_t decode_http_verb(const char *verb) {
     }
 }
 
-cgiUtilsRvType decode_uri_params(
+retval_t decode_uri_params(
     int num_params,
     char *params[],
     char *values[],
@@ -64,10 +64,10 @@ cgiUtilsRvType decode_uri_params(
             }
         }
     }
-    return CGI_OK;
+    return RV_OK;
 }
 
-cgiUtilsRvType uri_param_read(
+retval_t uri_param_read(
     const char *param,
     char *val,
     uriParamsType *params,
@@ -78,11 +78,11 @@ cgiUtilsRvType uri_param_read(
             log_trace("uri_param_read: Found %s", param);
             if (params[i].updated) {
                 strcpy(val, params[i].value);
-                return CGI_OK;
+                return RV_OK;
             } else {
-                return VALUE_NOT_UPDATED;
+                return RV_EXTERNAL_ERROR;
             }
         }
     }
-    return VARIABLE_NOT_FOUND;
+    return RV_ERROR;
 }

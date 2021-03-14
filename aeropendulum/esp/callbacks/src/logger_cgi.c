@@ -18,10 +18,10 @@
  */
 #include <string.h>
 
-#include <logger_cgi.h>
+#include <log.h>
+
 #include <cgi_utils.h>
 #include <ssi_utils.h>
-#include <log.h>
 
 extern uint8_t SYSTEM_LOG_LEVEL;
 
@@ -30,7 +30,7 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
     uriParamsType logger_cgi_params[2] = {{"verb", "0", false},
                                           {"value", "0", false}};
 
-    cgiUtilsRvType rv;
+    retval_t rv;
 
     rv = decode_uri_params(
         iNumParams,
@@ -39,7 +39,7 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
         sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]),
         logger_cgi_params);
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(500);
     }
 
@@ -51,7 +51,7 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
             logger_cgi_params,
             sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]));
 
-    if (rv != CGI_OK) {
+    if (rv != RV_OK) {
         return HTTP_CODE(400);
     }
 
@@ -87,7 +87,7 @@ const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[]
                     logger_cgi_params,
                     sizeof(logger_cgi_params) / sizeof(logger_cgi_params[0]));
 
-            if (rv != CGI_OK) {
+            if (rv != RV_OK) {
                 return HTTP_CODE(400);
             }
 

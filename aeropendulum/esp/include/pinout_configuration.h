@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marco Miretti.
+ * Copyright 2021 Marco Miretti.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,51 +16,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_
-#define EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_
-
-#include <log.h>
-
+#ifndef EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
+#define EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
 
 /**
  * Pinout for the ESP8266 D1 MINI
  * https://user-images.githubusercontent.com/26353057/87876217-f3333a00-c9ac-11ea-9a11-893db497dc48.png
  */
-#define LED_PIN             2
+/*******************************
+ *      PIN DESCRIPTION     PIN
+ *******************************/
+#define ONBOARD_LED_PIN     2
 
 #define ENCODER_PIN_A       12
 #define ENCODER_PIN_B       13
 
-#define PROPELLER_PWM_PIN   14
-
-/**
- * Propeller default configs
- * */
-#define DEFAULT_PROPELLER_PWM_FREQUENCY_HZ  100
-#define DEFAULT_PROPELLER_PWM_POWERON_DUTY  0x1C2A
-
-enum URI_TASK {
-    URI_UNDEF,
-    URI_WS_STREAM,
-    URI_START_PWM,
-    URI_PING,
-    URI_PARSE_TEST,
-};
-
-typedef struct PwmConfigType {
-    uint16_t frequency_hz;
-    uint16_t poweron_duty;
-    uint16_t pin;
-} PwmConfigType;
-
-void start_pwm_task(void *pvParameter);
-
-void send_telemetry_task(void *pvParameter);
-
-void update_actuators_task(void *pvParameter);
-
-void ping_task(void *pvParameter);
-
-void test_task(void *pvParameter);
-
-#endif /* EXAMPLES_PROJECT_INCLUDE_HTTP_SERVER_H_ */
+#endif /* EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_ */

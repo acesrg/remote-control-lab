@@ -16,23 +16,18 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <espressif/esp_common.h>
-#include <esp8266.h>
 #include <FreeRTOS.h>
-#include <task.h>
 #include <semphr.h>
-#include <httpd/httpd.h>
-#include <http_server.h>
-#include <telemetry_callback.h>
-#include <send_telemetry.h>
+
 #include <json_parser.h>
 
+#include <telemetry_callback.h>
 
-extern SimpleJSONType actuator_db[1];
+extern simple_json_t actuator_db[1];
 
 extern SemaphoreHandle_t xMutex_actuator_data;
 
-CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+retval_t telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
     /*
      * then, once the response was written to the websocket start
@@ -48,16 +43,16 @@ CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u1
     if (xMutex_actuator_data != NULL) {
         /* See if we can obtain the actuator_db mutex */
         if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
-            ParseRvType parse_rv = quick_get_value((const char *) data, actuator_db);
+            retval_t parse_rv = quick_get_value((const char *) data, actuator_db);
 
             xSemaphoreGive(xMutex_actuator_data);
 
-            if (parse_rv != PARSE_OK) {
-                return CALLBACK_PARSE_ERROR;
+            if (parse_rv != RV_OK) {
+                return RV_ERROR;
             }
         }
     }
 
     /* if we get to this poin everything went ok! */
-    return CALLBACK_OK;
+    return RV_OK;
 }

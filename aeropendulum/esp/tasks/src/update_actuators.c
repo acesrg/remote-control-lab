@@ -16,29 +16,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <esp/uart.h>
-#include <string.h>
-#include <stdio.h>
 #include <FreeRTOS.h>
-#include <task.h>
 #include <semphr.h>
-#include <ssid_config.h>
-#include <httpd/httpd.h>
-#include <http_server.h>
+#include <task.h>
+
+#include <log.h>
+
 #include <json_parser.h>
+#include <propeller_utils.h>
+
 #include <update_actuators.h>
-#include <pwm.h>
 
-
-extern uint8_t URI_TASK;
 
 extern SemaphoreHandle_t xMutex_actuator_data;
+uint16_t ACTUATORS_UPDATE_PERIOD_ms = DEFAULT_ACTUATORS_UPDATE_PERIOD_ms;
 
-extern PwmConfigType pwm_config;
-
-SimpleJSONType actuator_db[1] = {{"duty", DEFAULT_PROPELLER_PWM_POWERON_DUTY}};
+simple_json_t actuator_db[1] = {{"duty", 0}};
 
 void update_actuators_task(void *pvParameter) {
     log_trace("task started");
@@ -64,22 +57,9 @@ void update_actuators_task(void *pvParameter) {
                  *
                  * To mitigate this behaviors, pwm duty is updated only whe it has actually
                  * changed.
-                 *
-                 * Then, to supress the possibility of unexpected commands making it to the PWM
-                 * driver, the duty cycle is updated ONLY during PWM's low state.
-                 *
-                 * This is a workarround, the ideal behavior is that the pwm duty cycle updates at
-                 * the beginning of a new cycle only. This doesn't happen here.
                  * */
                 if (actuator_duty_value != last_actuator_duty) {
-                    while (gpio_read(pwm_config.pin)) {
-                        log_trace("waiting for duty cycle to end ...");
-                        vTaskDelay(0.1 / (1000 * pwm_config.frequency_hz * portTICK_PERIOD_MS));
-                    }
-                    log_trace("set actuator duty: 0x%04X", actuator_duty_value);
-                    taskENTER_CRITICAL();
-                    pwm_set_duty(actuator_duty_value);
-                    taskEXIT_CRITICAL();
+                    set_propeller_duty(actuator_duty_value);
                 }
                 last_actuator_duty = actuator_duty_value;
             }

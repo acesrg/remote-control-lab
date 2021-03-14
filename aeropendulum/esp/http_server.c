@@ -16,29 +16,40 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/* standard */
+#include <string.h>
+
+/* third party libs */
+#include <FreeRTOS.h>
+#include <semphr.h>
+#include <task.h>
 #include <espressif/esp_common.h>
 #include <espressif/user_interface.h>
-#include <esp8266.h>
-#include <esp/uart.h>
-#include <string.h>
-#include <stdio.h>
-#include <FreeRTOS.h>
-#include <task.h>
-#include <semphr.h>
-#include <ssid_config.h>
 #include <httpd/httpd.h>
-#include <http_server.h>
+#include <esp/uart.h>
 
-/* include callbacks */
-#include <callback_test.h>
-#include <test_cgi.h>
-#include <telemetry_cgi.h>
-#include <logger_cgi.h>
-#include <telemetry_callback.h>
+/* third party local libs */
+#include <log.h>
+
+/* local libs */
 #include <ssi_utils.h>
+#include <retval.h>
 
-// TODO(marcotti): this should be some kind of pointer
-uint8_t URI_TASK = URI_UNDEF;
+/* project tasks */
+#include <send_telemetry.h>
+#include <update_actuators.h>
+
+/* project callbacks/cgi */
+#include <logger_cgi.h>
+#include <propeller_cgi.h>
+#include <telemetry_callback.h>
+#include <telemetry_cgi.h>
+#include <test_cgi.h>
+
+/* configuration includes */
+#include <pinout_configuration.h>
+#include <private_ssid_config.h>
+
 uint8_t SYSTEM_LOG_LEVEL = LOG_WARN;
 
 /*
@@ -54,23 +65,12 @@ SemaphoreHandle_t xMutex_sensor_data;
  * as possible.
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
-    if (URI_TASK == URI_WS_STREAM) {
-        log_trace("received ws stream callback, someone is talking");
-        CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
-        if (rv == CALLBACK_OK)
-            log_trace("ws stream callback handled");
-        else
-            log_error("ws stream callback exited with error status: %d", rv);
-    } else if (URI_TASK == URI_PARSE_TEST) {
-        log_info("received test callback");
-        TestRvType rv = test_uri_parsing(pcb, data, data_len, mode);
-        if (rv == TEST_OK)
-            log_info("test: everything of from this end");
-        else
-            log_error("test: something went wrong");
-    } else {
-        log_error("callback method unrecognized %d", URI_TASK);
-    }
+    log_trace("received ws stream callback, someone is talking");
+    retval_t rv = telemetry_callback_handler(pcb, data, data_len, mode);
+    if (rv == RV_OK)
+        log_trace("ws stream callback handled");
+    else
+        log_error("ws stream callback exited with error status: %d", rv);
 }
 
 /**
@@ -78,22 +78,9 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
  */
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/stream")) {
-        URI_TASK = URI_WS_STREAM;
         log_info("Request for websocket stream");
         xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
         xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
-    } else if (!strcmp(uri, "/start_pwm")) {
-        URI_TASK = URI_START_PWM;
-        log_info("Request for propeller start");
-        xTaskCreate(&start_pwm_task, "start_pwm_task", 256, (void *) pcb, 2, NULL);
-    } else if (!strcmp(uri, "/ping")) {
-        URI_TASK = URI_PING;
-        log_info("Request for ping");
-        xTaskCreate(&ping_task, "ping_task", 256, (void *) pcb, 2, NULL);
-    } else if (!strcmp(uri, "/test")) {
-        URI_TASK = URI_PARSE_TEST;
-        log_info("Test task");
-        xTaskCreate(&test_task, "test_task", 256, (void *) pcb, 2, NULL);
     }
     log_trace("task %s created", uri);
 }
@@ -106,8 +93,12 @@ void httpd_task(void *pvParameters) {
     tCGI pCGIs[] = {
         {"/test", (tCGIHandler) test_cgi_handler},
         {"/test/resource", (tCGIHandler) test_resource_cgi_handler},
+        {"/test/parent_resource", (tCGIHandler) test_parent_resource_cgi_handler},
+        {"/test/parent_resource/child_a", (tCGIHandler) test_child_a_resource_cgi_handler},
+        {"/test/parent_resource/child_b", (tCGIHandler) test_child_b_resource_cgi_handler},
         {"/logger/level", (tCGIHandler) logger_level_cgi_handler},
         {"/telemetry/period", (tCGIHandler) telemetry_period_cgi_handler},
+        {"/propeller/pwm/status", (tCGIHandler) propeller_pwm_status_cgi_handler},
     };
 
 
@@ -158,8 +149,8 @@ void user_init(void) {
     sdk_wifi_station_connect();
 
     /* turn off LED */
-    gpio_enable(LED_PIN, GPIO_OUTPUT);
-    gpio_write(LED_PIN, true);
+    gpio_enable(ONBOARD_LED_PIN, GPIO_OUTPUT);
+    gpio_write(ONBOARD_LED_PIN, true);
 
     /* initialize tasks */
     xTaskCreate(&httpd_task, "HTTP Daemon", 256, NULL, 2, NULL);

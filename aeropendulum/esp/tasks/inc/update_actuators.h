@@ -16,19 +16,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_TEST_H_
-#define EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_TEST_H_
+#ifndef EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
+#define EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
 
-#include <espressif/esp_common.h>
-#include <esp8266.h>
-#include <string.h>
-#include <stdio.h>
+/*
+ * Telemetry definitions
+ * */
+#define MAX_ACTUATORS_PERIOD_ms 60000  /* a minute, kind of arbitrary */
+#define DEFAULT_ACTUATORS_UPDATE_PERIOD_ms 50
+#define MIN_ACTUATORS_PERIOD_ms 1
 
-typedef enum TestRvType {
-    TEST_OK,
-    TEST_ERROR
-} TestRvType;
+void update_actuators_task(void *pvParameter);
 
-TestRvType test_uri_parsing(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
-
-#endif /* EXAMPLES_PROJECT_CALLBACKS_INC_CALLBACK_TEST_H_ */
+#endif /* EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marco Miretti.
+ * Copyright 2021 Marco Miretti.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +16,17 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
-#define EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_
+#include <propeller_utils.h>
+#include <turnigy_speed_controller.h>
 
-/*
- * Telemetry definitions
- * */
-#define MAX_TELEMETRY_PERIOD_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_TELEMETRY_PERIOD_ms 500
-#define MIN_TELEMETRY_PERIOD_ms 1
+retval_t initialize_propeller(void) {
+    return turnigy_speed_controller_init_sequence();
+}
 
-#endif /* EXAMPLES_PROJECT_INCLUDE_SEND_TELEMETRY_H_ */
+retval_t deinitialize_propeller() {
+    return turnigy_speed_controller_deinit_sequence();
+}
+
+retval_t set_propeller_duty(uint16_t duty) {
+    return turnigy_speed_controller_update_pwm_duty(duty);
+}
