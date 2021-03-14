@@ -24,24 +24,29 @@
 
 #include <json_parser.h>
 
+typedef enum token_compare_t {
+    TOKEN_MATCHES,
+    TOKEN_DIFFERS
+} token_compare_t;
+
 /**
  * \brief       Takes json argument (float) given json string and jsmn token
  * \argument    &result: is the result float passed by pointer
  * \argument    &input:  the input json string
  * \argument    token:  a jsmn token that points to that json argument
- * \return      DetokenizeRvType: status code
+ * \return      retval_t: status code
  */
-DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *token) {
+retval_t detokenize_float(float *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
 
     if (token->type != JSMN_PRIMITIVE) {
         log_error("detokenize_string: expected primitive type token");
-        return DETOKENIZE_ERROR;
+        return RV_ERROR;
     }
 
     memcpy(result_str , &input[token->start], token->end - token->start);
     *result = strtof(result_str, NULL);
-    return DETOKENIZE_OK;
+    return RV_OK;
 }
 
 
@@ -50,19 +55,19 @@ DetokenizeRvType detokenize_float(float *result, const char *input, jsmntok_t *t
  * \argument    &result: is the result hex passed by pointer
  * \argument    &input:  the input json string
  * \argument    token:  a jsmn token that points to that json argument
- * \return      DetokenizeRvType: status code
+ * \return      retval_t: status code
  */
-DetokenizeRvType detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token) {
+retval_t detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
 
     if (token->type != JSMN_STRING) {
         log_error("detokenize_string: expected string type token");
-        return DETOKENIZE_ERROR;
+        return RV_ERROR;
     }
 
     memcpy(result_str , &input[token->start], token->end - token->start);
     *result = (uint16_t) strtoul(result_str, NULL, 16);
-    return DETOKENIZE_OK;
+    return RV_OK;
 }
 
 /**
@@ -70,12 +75,12 @@ DetokenizeRvType detokenize_hex(uint16_t *result, const char *input, jsmntok_t *
  * \argument    &input: the input json string
  * \argument    &token: the token that places the string
  * \argument    &expected: expected string
- * \return      TokenCompareRvType, comparisson value, that
+ * \return      token_compare_t, comparisson value, that
  *              is:
  *                  TOKEN_MATCHES or
  *                  TOKEN_DIFFERS
  */
-TokenCompareRvType compare_token(const char *input, jsmntok_t *token, const char *expected) {
+token_compare_t compare_token(const char *input, jsmntok_t *token, const char *expected) {
     if (token->type == JSMN_STRING && (int)strlen(expected) == token->end - token->start &&
             strncmp(input + token->start, expected, token->end - token->start) == 0) {
         return TOKEN_MATCHES;
@@ -84,7 +89,7 @@ TokenCompareRvType compare_token(const char *input, jsmntok_t *token, const char
 }
 
 
-ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data) {
+retval_t quick_get_value(const char *json_string, simple_json_t *stored_data) {
     jsmn_parser p;
     jsmntok_t t[MAX_ACTUATOR_TOKENS];
     int r;
@@ -93,7 +98,7 @@ ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data
     r = jsmn_parse(&p, json_string, strlen(json_string), t, sizeof(t)/sizeof(t[0]));
     if (r < 0) {
         log_error("jsmn_parse: failed to parse JSON: %d", r);
-        return PARSE_ERROR;
+        return RV_ERROR;
     }
     /* Assume the top-level element is an object */
     if (r < 1 || t[0].type != JSMN_OBJECT) {
@@ -107,11 +112,11 @@ ParseRvType quick_get_value(const char *json_string, SimpleJSONType *stored_data
             detokenize_hex(&stored_data[0].value, json_string, &t[i+1]);
         }
     }
-    return PARSE_OK;
+    return RV_OK;
 }
 
 
-ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len) {
+retval_t json_simple_compose(char *result, simple_json_t *inputs, size_t len) {
     result[0] = '\0';
     snprintf(result, JSON_SENSOR_MAX_LEN, "{");
     for (int i = 0; i < len; i++) {
@@ -123,5 +128,5 @@ ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len
         }
     }
     strcat(result, "}");
-    return PARSE_OK;
+    return RV_OK;
 }

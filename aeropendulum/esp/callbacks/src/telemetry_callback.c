@@ -23,7 +23,7 @@
 
 #include <telemetry_callback.h>
 
-extern SimpleJSONType actuator_db[1];
+extern simple_json_t actuator_db[1];
 
 extern SemaphoreHandle_t xMutex_actuator_data;
 
@@ -43,11 +43,11 @@ CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u1
     if (xMutex_actuator_data != NULL) {
         /* See if we can obtain the actuator_db mutex */
         if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {
-            ParseRvType parse_rv = quick_get_value((const char *) data, actuator_db);
+            retval_t parse_rv = quick_get_value((const char *) data, actuator_db);
 
             xSemaphoreGive(xMutex_actuator_data);
 
-            if (parse_rv != PARSE_OK) {
+            if (parse_rv != RV_OK) {
                 return CALLBACK_PARSE_ERROR;
             }
         }

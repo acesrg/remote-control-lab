@@ -31,7 +31,7 @@
 extern SemaphoreHandle_t xMutex_actuator_data;
 uint16_t ACTUATORS_UPDATE_PERIOD_ms = DEFAULT_ACTUATORS_UPDATE_PERIOD_ms;
 
-SimpleJSONType actuator_db[1] = {{"duty", 0}};
+simple_json_t actuator_db[1] = {{"duty", 0}};
 
 void update_actuators_task(void *pvParameter) {
     log_trace("task started");

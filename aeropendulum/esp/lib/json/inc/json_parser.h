@@ -19,38 +19,25 @@
 #ifndef EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 #define EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 
+#include <retval.h>
+
 #define MAX_ACTUATOR_TOKENS 8
 #define TOKEN_NAME_MAX_LEN  16
 #define TOKEN_FLOAT_MAX_LEN 16
 #define JSON_ACTUATOR_MAX_LEN   64
 #define JSON_SENSOR_MAX_LEN   64
 
-typedef enum DetokenizeRvType {
-    DETOKENIZE_OK,
-    DETOKENIZE_ERROR
-} DetokenizeRvType;
-
-typedef enum ParseRvType {
-    PARSE_OK,
-    PARSE_ERROR
-} ParseRvType;
-
-typedef enum TokenCompareRvType {
-    TOKEN_MATCHES,
-    TOKEN_DIFFERS
-} TokenCompareRvType;
-
-typedef struct SimpleJSONType {
+typedef struct simple_json_t {
     const char name[TOKEN_NAME_MAX_LEN];
     uint16_t value;
-} SimpleJSONType;
+} simple_json_t;
 
 
 /**
- * \brief   generate json from array of SimpleJSONType.
+ * \brief   generate json from array of simple_json_t.
  * \note    this function generates a string in json
  *          format with the arguments of structures of
- *          type SimpleJSONType. That is names and values
+ *          type simple_json_t. That is names and values
  *          Is important to note that this implementation
  *          may be sluggish, and could be optimized with
  *          some effort.
@@ -58,13 +45,13 @@ typedef struct SimpleJSONType {
  *              string should be big enough to hold the
  *              data, otherwise could cause memory
  *              allocation errors
- * \argument    &inputs: SimpleJSONType* array of
+ * \argument    &inputs: simple_json_t* array of
  *              structures
- *              len: size_t the number of SimpleJSONType
+ *              len: size_t the number of simple_json_t
  *              structures to be gathered.
- * \return  ParseRvType: status code
+ * \return  retval_t: status code
  */
-ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len);
+retval_t json_simple_compose(char *result, simple_json_t *inputs, size_t len);
 
 
 /**
@@ -72,14 +59,14 @@ ParseRvType json_simple_compose(char *result, SimpleJSONType *inputs, size_t len
  *
  * \argument    &json_string: the string from which the
  *              value will be taken.
- * \argument    &stored_data: a SimpleJSONType structure
+ * \argument    &stored_data: a simple_json_t structure
  *              array, each structure contains:
  *                  name: the name of the variable that
  *                  will be searched.
  *                  value: the resulting float will brief
  *                  stored in this address.
- *  \return     ParseRvType: status code
+ *  \return     retval_t: status code
  */
-ParseRvType quick_get_value(const char *json_string, SimpleJSONType *json_data);
+retval_t quick_get_value(const char *json_string, simple_json_t *json_data);
 
 #endif /* EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_ */

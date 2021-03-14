@@ -35,8 +35,8 @@
 
 uint16_t TELEMETRY_PERIOD_ms = DEFAULT_TELEMETRY_PERIOD_ms;
 
-static SimpleJSONType sensor_db[2] = {{"angle", 0},
-                                      {"error", 0}};
+static simple_json_t sensor_db[2] = {{"angle", 0},
+                                     {"error", 0}};
 
 void send_telemetry_task(void *pvParameter) {
     log_trace("task started");
@@ -55,8 +55,8 @@ void send_telemetry_task(void *pvParameter) {
         char composed_json[JSON_SENSOR_MAX_LEN];
         size_t database_size = sizeof(sensor_db)/sizeof(*sensor_db);
 
-        ParseRvType compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
-        if (compose_rv != PARSE_OK) {
+        retval_t compose_rv = json_simple_compose(composed_json, sensor_db, database_size);
+        if (compose_rv != RV_OK) {
             log_error("compose error");
         }
 

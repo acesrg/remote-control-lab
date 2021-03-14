@@ -201,13 +201,13 @@ const char *test_parent_resource_cgi_handler(int iIndex, int iNumParams, char *p
         case GET: {
                 static char composed_parent_resource[LWIP_HTTPD_MAX_TAG_INSERT_LEN];
 
-                SimpleJSONType parent_resource[2] = {{"child_a", global_resource_child_a},
-                                                     {"child_b", global_resource_child_b}};
+                simple_json_t parent_resource[2] = {{"child_a", global_resource_child_a},
+                                                    {"child_b", global_resource_child_b}};
 
                 size_t resource_size = sizeof(parent_resource)/sizeof(*parent_resource);
-                ParseRvType parse_rv = json_simple_compose(composed_parent_resource, parent_resource, resource_size);
+                retval_t parse_rv = json_simple_compose(composed_parent_resource, parent_resource, resource_size);
 
-                if (parse_rv != PARSE_OK) goto labeled_return;
+                if (parse_rv != RV_OK) goto labeled_return;
 
                 load_ssi_data(composed_parent_resource, sizeof(composed_parent_resource));
                 return "/response.ssi";
