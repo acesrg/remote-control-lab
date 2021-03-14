@@ -27,7 +27,7 @@ extern simple_json_t actuator_db[1];
 
 extern SemaphoreHandle_t xMutex_actuator_data;
 
-CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
+retval_t telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
     /*
      * then, once the response was written to the websocket start
@@ -48,11 +48,11 @@ CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u1
             xSemaphoreGive(xMutex_actuator_data);
 
             if (parse_rv != RV_OK) {
-                return CALLBACK_PARSE_ERROR;
+                return RV_ERROR;
             }
         }
     }
 
     /* if we get to this poin everything went ok! */
-    return CALLBACK_OK;
+    return RV_OK;
 }

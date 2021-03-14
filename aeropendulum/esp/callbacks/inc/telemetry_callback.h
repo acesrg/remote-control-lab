@@ -21,11 +21,6 @@
 
 #include <tcp.h>
 
-typedef enum CallbackRvType {
-    CALLBACK_OK,
-    CALLBACK_PARSE_ERROR,
-} CallbackRvType;
-
-CallbackRvType telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
+retval_t telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode);
 
 #endif /* EXAMPLES_PROJECT_CALLBACKS_INC_TELEMETRY_CALLBACK_H_ */

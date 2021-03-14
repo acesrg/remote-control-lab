@@ -33,6 +33,7 @@
 
 /* local libs */
 #include <ssi_utils.h>
+#include <retval.h>
 
 /* project tasks */
 #include <send_telemetry.h>
@@ -65,8 +66,8 @@ SemaphoreHandle_t xMutex_sensor_data;
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     log_trace("received ws stream callback, someone is talking");
-    CallbackRvType rv = telemetry_callback_handler(pcb, data, data_len, mode);
-    if (rv == CALLBACK_OK)
+    retval_t rv = telemetry_callback_handler(pcb, data, data_len, mode);
+    if (rv == RV_OK)
         log_trace("ws stream callback handled");
     else
         log_error("ws stream callback exited with error status: %d", rv);
