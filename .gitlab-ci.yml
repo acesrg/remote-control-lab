@@ -11,6 +11,7 @@ stages:
   - build
   - burn
   - test
+  - docs
 
 code-style:
   stage: lint
@@ -59,3 +60,15 @@ test-aero:
     - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
   tags:
     - testing
+
+pages:
+  stage: docs
+  image: nxpleuvenjenkins/doxygen
+  script:
+    - doxygen .gci/Doxyfile
+  tags:
+    - testing
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/public/*
+    expire_in: 1 week
