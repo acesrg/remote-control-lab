@@ -16,20 +16,26 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file json_parser.h */
 #ifndef EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 #define EXAMPLES_PROJECT_LIB_JSON_INC_JSON_PARSER_H_
 
 #include <retval.h>
 
-#define MAX_ACTUATOR_TOKENS 8
-#define TOKEN_NAME_MAX_LEN  16
-#define TOKEN_FLOAT_MAX_LEN 16
-#define JSON_ACTUATOR_MAX_LEN   64
-#define JSON_SENSOR_MAX_LEN   64
+#define MAX_ACTUATOR_TOKENS     8   /**< \brief Max tokens (num) that an actuator json can handle*/
+#define TOKEN_NAME_MAX_LEN      16  /**< \brief Max len (chars) of JSON token name */
+#define TOKEN_FLOAT_MAX_LEN     16  /**< \brief Max len (chars) of JSON float */
+#define JSON_ACTUATOR_MAX_LEN   64  /**< \brief Max len (chars) of JSON actuator string */
+#define JSON_SENSOR_MAX_LEN     64  /**< \brief Max len (chars) of JSON sensor string */
 
+
+/**
+ * \typedef simple_json_t
+ * \brief   A struct tought to be converted to a JSON string.
+ */
 typedef struct simple_json_t {
-    const char name[TOKEN_NAME_MAX_LEN];
-    uint16_t value;
+    const char name[TOKEN_NAME_MAX_LEN];    /**< \brief name of a parameter */
+    uint16_t value;                         /**< \brief value of the parameter */
 } simple_json_t;
 
 
@@ -41,13 +47,13 @@ typedef struct simple_json_t {
  *          Is important to note that this implementation
  *          may be sluggish, and could be optimized with
  *          some effort.
- * \argument    &result: char* output json string, this
+ * \param    &result: char* output json string, this
  *              string should be big enough to hold the
  *              data, otherwise could cause memory
  *              allocation errors
- * \argument    &inputs: simple_json_t* array of
+ * \param    &inputs: simple_json_t* array of
  *              structures
- *              len: size_t the number of simple_json_t
+ * \param    len: size_t the number of simple_json_t
  *              structures to be gathered.
  * \return  retval_t: status code
  */
@@ -57,9 +63,9 @@ retval_t json_simple_compose(char *result, simple_json_t *inputs, size_t len);
 /**
  * \brief   gathers a floating point value from json_string
  *
- * \argument    &json_string: the string from which the
+ * \param    &json_string: the string from which the
  *              value will be taken.
- * \argument    &stored_data: a simple_json_t structure
+ * \param    &json_data: a simple_json_t structure
  *              array, each structure contains:
  *                  name: the name of the variable that
  *                  will be searched.
