@@ -16,20 +16,28 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+ /** \file encoder.c */
 #include <esp8266.h>
 
 #include <log.h>
-#include <json_parser.h>
 
 #include <encoder.h>
 
+/**
+ * \brief   A quadrature encoder structure.
+ */
 typedef struct EncoderObjectType {
-    uint8_t pin_a;
-    uint8_t pin_b;
-    size_t  last_state;
-    uint16_t value;
+    uint8_t pin_a;      /**< \brief The "a" pin of the encoder. */
+    uint8_t pin_b;      /**< \brief The "b" pin of the encoder. */
+    size_t  last_state; /**< \brief A latch of the last encoder state. */
+    uint16_t value;     /**< \brief The output value. */
 } EncoderObjectType;
 
+/**
+ * \brief   The possible events associated with and encoder interrupt.
+ *
+ * RISE and FALL refer to the electrical rising and falling edges.
+ */
 typedef enum EncoderEventType {
     NO_MEASURE,
     PIN_A_RISE,
@@ -38,13 +46,15 @@ typedef enum EncoderEventType {
     PIN_B_FALL
 } EncoderEventType;
 
-#define INCREMENT (uint8_t) (PIN_B_RISE - PIN_A_RISE)
-#define INCREMENT_ (uint8_t) (PIN_A_RISE - PIN_B_FALL)
+#define INCREMENT (uint8_t) (PIN_B_RISE - PIN_A_RISE)  /**< \brief This subtraction only can mean an encoder increment */
+#define INCREMENT_ (uint8_t) (PIN_A_RISE - PIN_B_FALL) /**< \brief This subtraction only can mean an encoder increment */
 
-#define DECREMENT (uint8_t) (PIN_A_RISE - PIN_B_RISE)
-#define DECREMENT_ (uint8_t) (PIN_B_FALL - PIN_A_RISE)
+#define DECREMENT (uint8_t) (PIN_A_RISE - PIN_B_RISE)  /**< \brief This subtraction only can mean an encoder decrement */
+#define DECREMENT_ (uint8_t) (PIN_B_FALL - PIN_A_RISE) /**< \brief This subtraction only can mean an encoder decrement */
 
-/* globals to be used by isr */
+/**
+ * \brief   Global encoder object to be used by the ISR.
+ */
 EncoderObjectType encoder = {0, 0, NO_MEASURE, 0};
 
 void encoder_intr_handler(uint8_t gpio_num);
@@ -57,12 +67,6 @@ void set_encoder_value(uint16_t value) {
     encoder.value = value;
 }
 
-/**
- * \brief   Initialize the encoder and setup interrupts.
- * \note    Given pin_a and pin_b of the encoder, initialize
- *          the quadrature encoder. Set up the interrupts
- *          for the given pins and populate the structure.
- **/
 void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b) {
     log_trace("Init quadrature encoder");
     log_trace("Set gpio as input");
@@ -87,7 +91,7 @@ void quadrature_encoder_init(uint8_t pin_a, uint8_t pin_b) {
  *          pin_a or pin_b on the encoder.
  *
  * \param   gpio_num: the pin number
- * \retval  EncoderEventType (enum): the type of said
+ * \return  EncoderEventType: the type of said
  *          interrupt (rising, falling and which pin)
  **/
 EncoderEventType detect_event_nature(uint8_t gpio_num) {

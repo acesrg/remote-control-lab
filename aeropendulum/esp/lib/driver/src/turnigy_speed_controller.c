@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file turnigy_speed_controller.c */
 #include <stdbool.h>
 
 #include <esp/gpio.h>
@@ -26,19 +27,25 @@
 
 #include <turnigy_speed_controller.h>
 
+/**
+ * \brief   PWM configuration structure.
+ */
 typedef struct pwm_config_t {
-    uint16_t frequency_hz;
-    uint16_t poweron_duty;
-    uint8_t pin;
+    uint16_t frequency_hz;  /**< \brief Frequency of the PWM signal in Hertz */
+    uint16_t poweron_duty;  /**< \brief Duty necessary to init the propeller */
+    uint8_t pin;            /**< \brief Pin where the PWM will be initialized */
 } pwm_config_t;
 
-#define DEFAULT_DRIVER_PWM_PIN   14
-#define DEFAULT_DRIVER_PWM_FREQUENCY_HZ  100
-#define DEFAULT_DRIVER_PWM_POWERON_DUTY  0x1C2A
-#define DEFAULT_DRIVER_PWM_POWEROFF_DUTY  0x0001
-#define DRIVER_PWM_COUNT    1
-#define DRIVER_PWM_REVERSE  false
+#define DEFAULT_DRIVER_PWM_PIN              14      /**< \brief Default driver pin */
+#define DEFAULT_DRIVER_PWM_FREQUENCY_HZ     100     /**< \brief Default PWM frequency */
+#define DEFAULT_DRIVER_PWM_POWERON_DUTY     0x1C2A  /**< \brief Default duty that will init the driver */
+#define DEFAULT_DRIVER_PWM_POWEROFF_DUTY    0x0001  /**< \brief Default duty that will stop the driver */
+#define DRIVER_PWM_COUNT                    1       /**< \brief Quantity of PWMs to use */
+#define DRIVER_PWM_REVERSE                  false   /**< \brief PWM Reverse option */
 
+/**
+ * \brief   Global PWM driver configuration.
+ */
 pwm_config_t driver_config = {
     .pin = DEFAULT_DRIVER_PWM_PIN,
     .frequency_hz = DEFAULT_DRIVER_PWM_FREQUENCY_HZ,
@@ -72,19 +79,19 @@ retval_t turnigy_speed_controller_deinit_sequence() {
 }
 
 retval_t turnigy_speed_controller_update_pwm_duty(uint16_t duty) {
-    /*
-     * PWM workarround:
+    /**
+     * \note    PWM workaround:
      *
-     * It seems that updating the pwm during the duty cycle causes it to go down and
-     * inmediatly up again. This could produce unintended behavior, such as turning
-     * the PWM off at an specific time, that the motor driver would interpret as some
-     * new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
+     *     It seems that updating the pwm during the duty cycle causes it to go down and
+     *     immediately up again. This could produce unintended behavior, such as turning
+     *     the PWM off at an specific time, that the motor driver would interpret as some
+     *     new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
      *
-     * To supress the possibility of unexpected commands making it to the PWM
-     * driver, the duty cycle is updated ONLY during PWM's low state.
+     *     To suppress the possibility of unexpected commands making it to the PWM
+     *     driver, the duty cycle is updated ONLY during PWM's low state.
      *
-     * This is a workarround, the ideal behavior is that the pwm duty cycle updates at
-     * the beginning of a new cycle only. This doesn't happen here.
+     *     This is a workaround, the ideal behavior is that the PWM duty cycle updates at
+     *     the beginning of a new cycle only. This doesn't happen here.
      * */
     while (gpio_read(driver_config.pin)) {
         log_trace("waiting for duty cycle to end ...");
