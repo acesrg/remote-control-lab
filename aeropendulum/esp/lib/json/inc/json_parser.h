@@ -30,7 +30,6 @@
 
 
 /**
- * \typedef simple_json_t
  * \brief   A struct tought to be converted to a JSON string.
  */
 typedef struct simple_json_t {
