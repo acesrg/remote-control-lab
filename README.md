@@ -1,5 +1,6 @@
-![remote-control-lab svg](https://user-images.githubusercontent.com/26353057/82385781-43bc0480-9a09-11ea-87a9-e8fedc28413b.png)
+<img src="https://user-images.githubusercontent.com/26353057/82385781-43bc0480-9a09-11ea-87a9-e8fedc28413b.png" width="800" />
 
+# Remote Control-Lab
 The remote control lab is (going to be) a control-systems *remote* laboratory. It's main goal is to aid students in the understanding of multiple control techniques, and allow them experimentally to manipulate and control multiple dynamic systems.
 
 ## Status: :construction: :construction: on development :construction: :construction:
