@@ -16,13 +16,18 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file retval.h */
 #ifndef EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
 #define EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_
 
+
+/**
+ * \brief   A generic return value with error code responses.
+ */
 typedef enum retval_t {
-    RV_OK,
-    RV_ERROR,
-    RV_EXTERNAL_ERROR,
+    RV_OK,              /**< The function ran as expected */
+    RV_ERROR,           /**< The function encountered an error */
+    RV_EXTERNAL_ERROR,  /**< The function encountered an error, blame is on the caller */
 } retval_t;
 
 #endif /* EXAMPLES_PROJECT_LIB_RETVAL_INC_RETVAL_H_ */
