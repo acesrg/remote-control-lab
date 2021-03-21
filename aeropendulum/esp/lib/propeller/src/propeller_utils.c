@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file propeller_utils.c */
 #include <propeller_utils.h>
 #include <turnigy_speed_controller.h>
 
