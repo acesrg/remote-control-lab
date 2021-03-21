@@ -16,7 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
- /** \file encoder.c */
+/** \file encoder.c */
 #include <esp8266.h>
 
 #include <log.h>
@@ -46,11 +46,11 @@ typedef enum EncoderEventType {
     PIN_B_FALL
 } EncoderEventType;
 
-#define INCREMENT (uint8_t) (PIN_B_RISE - PIN_A_RISE)  /**< \brief This subtraction only can mean an encoder increment */
-#define INCREMENT_ (uint8_t) (PIN_A_RISE - PIN_B_FALL) /**< \brief This subtraction only can mean an encoder increment */
+#define INCREMENT (uint8_t) (PIN_B_RISE - PIN_A_RISE)  /**< \brief This subtraction means an encoder increment */
+#define INCREMENT_ (uint8_t) (PIN_A_RISE - PIN_B_FALL) /**< \brief This subtraction means an encoder increment */
 
-#define DECREMENT (uint8_t) (PIN_A_RISE - PIN_B_RISE)  /**< \brief This subtraction only can mean an encoder decrement */
-#define DECREMENT_ (uint8_t) (PIN_B_FALL - PIN_A_RISE) /**< \brief This subtraction only can mean an encoder decrement */
+#define DECREMENT (uint8_t) (PIN_A_RISE - PIN_B_RISE)  /**< \brief This subtraction means an encoder decrement */
+#define DECREMENT_ (uint8_t) (PIN_B_FALL - PIN_A_RISE) /**< \brief This subtraction means an encoder decrement */
 
 /**
  * \brief   Global encoder object to be used by the ISR.

@@ -16,7 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
- /** \file ssi_utils.h */
+/** \file ssi_utils.h */
 #ifndef EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_
 #define EXAMPLES_PROJECT_LIB_CGI_INC_SSI_UTILS_H_
 
