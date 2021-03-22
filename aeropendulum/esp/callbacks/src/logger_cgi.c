@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file logger_cgi.c */
 #include <string.h>
 
 #include <log.h>
@@ -23,7 +24,7 @@
 #include <cgi_utils.h>
 #include <ssi_utils.h>
 
-extern uint8_t SYSTEM_LOG_LEVEL;
+extern uint8_t SYSTEM_LOG_LEVEL;  /**< \brief Global log level */
 
 
 const char *logger_level_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {
