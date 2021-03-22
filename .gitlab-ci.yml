@@ -66,6 +66,7 @@ pages:
   image: nxpleuvenjenkins/doxygen
   script:
     - doxygen .gci/Doxyfile
+    - mv $CI_PROJECT_DIR/public/html/* $CI_PROJECT_DIR/public
   tags:
     - testing
   artifacts:
