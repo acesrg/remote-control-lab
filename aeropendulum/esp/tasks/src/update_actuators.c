@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file update_actuators.c */
 #include <FreeRTOS.h>
 #include <semphr.h>
 #include <task.h>
@@ -27,10 +28,13 @@
 
 #include <update_actuators.h>
 
-
+/** \brief Mutex to avoid reading the actuator value while is being written */
 extern SemaphoreHandle_t xMutex_actuator_data;
-uint16_t ACTUATORS_UPDATE_PERIOD_ms = DEFAULT_ACTUATORS_UPDATE_PERIOD_ms;
+uint16_t ACTUATORS_UPDATE_PERIOD_ms = DEFAULT_ACTUATORS_UPDATE_PERIOD_ms;   /**< \brief Actuators update period */
 
+/**
+ * \brief A structure that will contain the duty to be set in the actuators.
+ */
 simple_json_t actuator_db[1] = {{"duty", 0}};
 
 void update_actuators_task(void *pvParameter) {
@@ -47,16 +51,16 @@ void update_actuators_task(void *pvParameter) {
                 uint16_t actuator_duty_value = actuator_db[0].value;
                 xSemaphoreGive(xMutex_actuator_data);
 
-                /*
-                 * PWM workarround:
+                /**
+                 * \note PWM workaround:
                  *
-                 * It seems that updating the pwm during the duty cycle causes it to go down and
-                 * inmediatly up again. This could produce unintended behavior, such as turning
-                 * the PWM off at an specific time, that the motor driver would interpret as some
-                 * new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
+                 *      It seems that updating the pwm during the duty cycle causes it to go down and
+                 *      immediately up again. This could produce unintended behavior, such as turning
+                 *      the PWM off at an specific time, that the motor driver would interpret as some
+                 *      new command (eg. between 1.1 and 2 ms, for the turnigy drivers).
                  *
-                 * To mitigate this behaviors, pwm duty is updated only whe it has actually
-                 * changed.
+                 *      To mitigate this behaviors, pwm duty is updated only when it has actually
+                 *      changed.
                  * */
                 if (actuator_duty_value != last_actuator_duty) {
                     set_propeller_duty(actuator_duty_value);

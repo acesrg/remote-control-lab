@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file send_telemetry.c */
 #include <string.h>
 
 #include <FreeRTOS.h>
@@ -33,6 +34,7 @@
 
 #include <pinout_configuration.h>
 
+/** \brief The period in which telemetry will be read and sent to the websocket. */
 uint16_t TELEMETRY_PERIOD_ms = DEFAULT_TELEMETRY_PERIOD_ms;
 
 static simple_json_t sensor_db[2] = {{"angle", 0},
@@ -42,7 +44,7 @@ void send_telemetry_task(void *pvParameter) {
     log_trace("task started");
     struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
 
-    // TODO(marcotti): outer endpoint
+    /** \todo The encoder initialization should be an HTTP endpoint, out of here. */
     log_trace("encoder init");
     quadrature_encoder_init(ENCODER_PIN_A, ENCODER_PIN_B);
 
