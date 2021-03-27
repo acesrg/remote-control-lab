@@ -9,9 +9,8 @@ This repo contains the firmware for the dynamic systems, providing:
 - The communication with the sensors and actuators (read and write, respectively).
 - An `http` server, to set and get the formerly mentioned data.
 
-# Table of Contents
+# Useful Links
 
-- Compilation _HowTo_
-- The API
-- Related Projects
-- Back to the repo
+- [The API](https://marcomiretti.gitlab.io/remote-control-lab/openapi.html)
+- [Related Projects](https://marcomiretti.gitlab.io/remote-control-lab/df/dbb/autotoc_md7.html)
+- [Back to the repo](https://gitlab.com/marcomiretti/remote-control-lab)
