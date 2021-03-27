@@ -11,6 +11,7 @@ stages:
   - build
   - burn
   - test
+  - api-docs
   - docs
 
 code-style:
@@ -60,6 +61,17 @@ test-aero:
     - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
   tags:
     - testing
+
+openapi:
+  stage: api-docs
+  image: node:latest
+  script:
+  - npm install -g redoc-cli
+  - mkdir -p public/
+  - redoc-cli bundle -o public/openapi.html docs/api.yaml
+  artifacts:
+    paths:
+    - public
 
 pages:
   stage: docs
