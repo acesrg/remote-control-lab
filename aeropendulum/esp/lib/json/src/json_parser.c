@@ -16,6 +16,8 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file json_parser.c */
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -24,17 +26,20 @@
 
 #include <json_parser.h>
 
+/**
+ * \brief   Enum to indicate the result of a token comparison.
+ **/
 typedef enum token_compare_t {
     TOKEN_MATCHES,
     TOKEN_DIFFERS
 } token_compare_t;
 
 /**
- * \brief       Takes json argument (float) given json string and jsmn token
- * \argument    &result: is the result float passed by pointer
- * \argument    &input:  the input json string
- * \argument    token:  a jsmn token that points to that json argument
- * \return      retval_t: status code
+ * \brief    Takes json argument (float) given json string and jsmn token
+ * \param    &result: is the result float passed by pointer
+ * \param    &input:  the input json string
+ * \param    token:  a jsmn token that points to that json argument
+ * \return   retval_t: status code
  */
 retval_t detokenize_float(float *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
@@ -51,11 +56,11 @@ retval_t detokenize_float(float *result, const char *input, jsmntok_t *token) {
 
 
 /**
- * \brief       Takes json argument (hex) given json string and jsmn token
- * \argument    &result: is the result hex passed by pointer
- * \argument    &input:  the input json string
- * \argument    token:  a jsmn token that points to that json argument
- * \return      retval_t: status code
+ * \brief    Takes json argument (hex) given json string and jsmn token
+ * \param    &result: is the result hex passed by pointer
+ * \param    &input:  the input json string
+ * \param    token:  a jsmn token that points to that json argument
+ * \return   retval_t: status code
  */
 retval_t detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token) {
     char result_str[TOKEN_FLOAT_MAX_LEN] = {0};
@@ -71,14 +76,14 @@ retval_t detokenize_hex(uint16_t *result, const char *input, jsmntok_t *token) {
 }
 
 /**
- * \brief   quick token compare using strncmp
- * \argument    &input: the input json string
- * \argument    &token: the token that places the string
- * \argument    &expected: expected string
- * \return      token_compare_t, comparisson value, that
- *              is:
- *                  TOKEN_MATCHES or
- *                  TOKEN_DIFFERS
+ * \brief    quick token compare using strncmp
+ * \param    &input: the input json string
+ * \param    &token: the token that places the string
+ * \param    &expected: expected string
+ * \return   token_compare_t, comparisson value, that
+ *           is:
+ *              TOKEN_MATCHES or
+ *              TOKEN_DIFFERS
  */
 token_compare_t compare_token(const char *input, jsmntok_t *token, const char *expected) {
     if (token->type == JSMN_STRING && (int)strlen(expected) == token->end - token->start &&

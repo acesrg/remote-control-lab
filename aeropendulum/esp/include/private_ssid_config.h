@@ -16,10 +16,11 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file private_ssid_config.h */
 #ifndef EXAMPLES_PROJECT_INCLUDE_PRIVATE_SSID_CONFIG_H_
 #define EXAMPLES_PROJECT_INCLUDE_PRIVATE_SSID_CONFIG_H_
 
-#define WIFI_SSID "$WIFI_SSID"
-#define WIFI_PASS "$WIFI_PASS"
+#define WIFI_SSID "$WIFI_SSID" /**< \brief User customizable WIFI SSID */
+#define WIFI_PASS "$WIFI_PASS" /**< \brief User customizable WIFI PASS */
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_PRIVATE_SSID_CONFIG_H_ */

@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file propeller_cgi.c */
 #include <string.h>
 
 #include <log.h>
@@ -24,6 +25,9 @@
 #include <ssi_utils.h>
 #include <propeller_utils.h>
 
+/**
+ * \brief Storage for the status of propeller PWM, can be either "initialized" or "disabled".
+ */
 char propeller_pwm_status[URI_VARIABLE_VALUE_MAX_LEN] = "disabled";
 
 const char *propeller_pwm_status_cgi_handler(

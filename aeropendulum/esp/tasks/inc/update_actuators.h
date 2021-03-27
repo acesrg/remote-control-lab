@@ -16,16 +16,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file update_actuators.h */
 #ifndef EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
 #define EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_
 
 /*
  * Telemetry definitions
  * */
-#define MAX_ACTUATORS_PERIOD_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_ACTUATORS_UPDATE_PERIOD_ms 50
-#define MIN_ACTUATORS_PERIOD_ms 1
+#define MAX_ACTUATORS_PERIOD_ms             60000   /**< \brief Arbitrary max actuator refresh period */
+#define DEFAULT_ACTUATORS_UPDATE_PERIOD_ms  50      /**< \brief Comfortable actuator refresh period */
+#define MIN_ACTUATORS_PERIOD_ms             5       /**< \brief Min refresh period (hw limit) */
 
+
+/**
+ * \brief   Update the actuators when the value has changed.
+ * \param   *pvParameter: Unused.
+ */
 void update_actuators_task(void *pvParameter);
 
 #endif /* EXAMPLES_PROJECT_TASKS_INC_UPDATE_ACTUATORS_H_ */

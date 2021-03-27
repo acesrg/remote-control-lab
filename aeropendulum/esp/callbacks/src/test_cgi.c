@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file test_cgi.c */
 #include <test_cgi.h>
 
 #include <log.h>
@@ -26,8 +27,20 @@
 #include <json_parser.h>
 
 extern uint8_t SYSTEM_LOG_LEVEL;
+
+/**
+ * \brief Storage of the dummy test resource.
+ */
 static char dummy_test_resource[LWIP_HTTPD_MAX_TAG_INSERT_LEN];
+
+/**
+ * \brief Storage of the "a" child resource.
+ */
 static uint16_t global_resource_child_a;
+
+/**
+ * \brief Storage of the "b" child resource.
+ */
 static uint16_t global_resource_child_b;
 
 const char *test_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]) {

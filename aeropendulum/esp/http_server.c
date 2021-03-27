@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file http_server.c */
 /* standard */
 #include <string.h>
 
@@ -52,17 +53,14 @@
 
 uint8_t SYSTEM_LOG_LEVEL = LOG_WARN;
 
-/*
- * Define the mutexes for both data structures
- * */
+/** \brief Mutex to avoid reading the actuator value while is being written */
 SemaphoreHandle_t xMutex_actuator_data;
-SemaphoreHandle_t xMutex_sensor_data;
 
 /**
- * This function is called when websocket frame is received.
+ * \brief   Called when websocket frame is received.
  *
- * Note: this function is executed on TCP thread and should return as soon
- * as possible.
+ * \warning Is executed on TCP thread and should return as soon
+ *          as possible.
  */
 void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     log_trace("received ws stream callback, someone is talking");
@@ -74,7 +72,9 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
 }
 
 /**
- * This function is called when new websocket is open
+ * \brief   Called when new websocket is opened.
+ *
+ *  When ws://$HOST_IP/stream is hit, it will create the tasks to receive and send telemetry.
  */
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/stream")) {
@@ -85,10 +85,16 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     log_trace("task %s created", uri);
 }
 
+/**
+ * \brief   HTTP server task.
+ *
+ *  Sets mutexes, maps HTTP uris, sets handlers and callbacks (SSI, CGI and websockets).
+ *
+ * \param   *pvParameters: The TCP socket.
+ */
 void httpd_task(void *pvParameters) {
     /* initialize mutexes for database interaction */
     xMutex_actuator_data = xSemaphoreCreateMutex();
-    xMutex_sensor_data = xSemaphoreCreateMutex();
 
     tCGI pCGIs[] = {
         {"/test", (tCGIHandler) test_cgi_handler},
@@ -102,11 +108,12 @@ void httpd_task(void *pvParameters) {
     };
 
 
-    /*
-     * only use one SSI, the handler will just replace
-     * the tag with the string from a pointer+len. The
-     * function set_ssi_response() should be called
-     * before invoking the SSI enabled file. */
+    /**
+     * \note On SSI tags.
+     *      Only use one SSI, the handler will just replace
+     *      the tag with the string from a pointer+len. The
+     *      function set_ssi_response() should be called
+     *      before invoking the SSI enabled file. */
     const char *pcConfigSSITags[] = {
         "response",
     };
@@ -123,6 +130,9 @@ void httpd_task(void *pvParameters) {
     for (;;) {}
 }
 
+/**
+ * \brief Program's entrypoint.
+ */
 void user_init(void) {
     uart_set_baud(0, 115200);
     log_set_level(SYSTEM_LOG_LEVEL);
@@ -135,7 +145,9 @@ void user_init(void) {
 
     struct ip_info station_ip;
 
-    /* TODO: this should be more automatic */
+    /**
+     * \todo The IP address set should be more automatic.
+     */
     IP4_ADDR(&station_ip.ip, 192, 168, 100, 41);
     IP4_ADDR(&station_ip.gw, 192, 168, 100, 1);
     IP4_ADDR(&station_ip.netmask, 255, 255, 255, 0);

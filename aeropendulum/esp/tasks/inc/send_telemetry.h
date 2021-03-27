@@ -16,16 +16,22 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file send_telemetry.h */
 #ifndef EXAMPLES_PROJECT_TASKS_INC_SEND_TELEMETRY_H_
 #define EXAMPLES_PROJECT_TASKS_INC_SEND_TELEMETRY_H_
 
 /*
  * Telemetry definitions
  * */
-#define MAX_TELEMETRY_PERIOD_ms 60000  /* a minute, kind of arbitrary */
-#define DEFAULT_TELEMETRY_PERIOD_ms 500
-#define MIN_TELEMETRY_PERIOD_ms 1
+#define MAX_TELEMETRY_PERIOD_ms     60000   /**< \brief Arbitrary max telemetry period */
+#define DEFAULT_TELEMETRY_PERIOD_ms 500     /**< \brief Comfortable telemetry period */
+#define MIN_TELEMETRY_PERIOD_ms     1       /**< \brief Min telemetry period (sw limitation) */
 
+/**
+ * \brief Initializes encoder, then sends telemetry in a loop.
+ *
+ * \param *pvParameter: Basically, the TCP socket structure.
+ */
 void send_telemetry_task(void *pvParameter);
 
 #endif /* EXAMPLES_PROJECT_TASKS_INC_SEND_TELEMETRY_H_ */

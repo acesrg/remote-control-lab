@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file pinout_configuration.h */
 #ifndef EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
 #define EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_
 
@@ -26,9 +27,9 @@
 /*******************************
  *      PIN DESCRIPTION     PIN
  *******************************/
-#define ONBOARD_LED_PIN     2
+#define ONBOARD_LED_PIN     2   /**< \brief Led on top of the D1 MINI board */
 
-#define ENCODER_PIN_A       12
-#define ENCODER_PIN_B       13
+#define ENCODER_PIN_A       12  /**< \brief Pin connected to the encoder signal A */
+#define ENCODER_PIN_B       13  /**< \brief Pin connected to the encoder signal B */
 
 #endif /* EXAMPLES_PROJECT_INCLUDE_PINOUT_CONFIGURATION_H_ */

@@ -16,6 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file telemetry_callback.c */
 #include <FreeRTOS.h>
 #include <semphr.h>
 
@@ -29,17 +30,15 @@ extern SemaphoreHandle_t xMutex_actuator_data;
 
 retval_t telemetry_callback_handler(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mode) {
     data[data_len] = '\0';
-    /*
-     * then, once the response was written to the websocket start
-     * processing the input data.
+    /**
+     * \note
+     *      Since the websocket stream database is being used, and the
+     *      json shold have the form of {"duty": %f}. We pass directly
+     *      the structure (initialized with said form).
      *
-     * since the websocket stream database is being used, and the
-     * json shold have the form of {"duty": %f}. We pass directly
-     * the structure (initialized with said form).
-     *
-     * after this call, actuator_db.value should be updated and
-     * ready to use.
-     * */
+     *      After this call, actuator_db.value should be updated and
+     *      ready to use.
+     */
     if (xMutex_actuator_data != NULL) {
         /* See if we can obtain the actuator_db mutex */
         if (xSemaphoreTake(xMutex_actuator_data, (TickType_t) 100) == pdTRUE) {

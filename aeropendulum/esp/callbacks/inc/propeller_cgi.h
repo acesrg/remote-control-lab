@@ -16,9 +16,19 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
+/** \file propeller_cgi.h */
 #ifndef EXAMPLES_PROJECT_CALLBACKS_INC_PROPELLER_CGI_H_
 #define EXAMPLES_PROJECT_CALLBACKS_INC_PROPELLER_CGI_H_
 
+/**
+ * \brief   An HTTP handler to adjust the system logging level.
+ * \remark  Endpoint is http://$HOST_IP/propeller/pwm/status
+ * \param   iIndex: Unused.
+ * \param   iNumParams: Quantity of variables in the query.
+ * \param   *pcParam[]: Pointer to first char of first string in query-names array.
+ * \param   *pcValue[]: Pointer to first char of first string in query-values array.
+ * \return  A file name, which will contain an HTTP return code.
+ */
 const char *propeller_pwm_status_cgi_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
 
 #endif /* EXAMPLES_PROJECT_CALLBACKS_INC_PROPELLER_CGI_H_ */

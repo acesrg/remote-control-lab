@@ -1,0 +1,327 @@
+openapi: "3.0.0"
+info:
+  description: "This is the API documentation for the Remote Control-Lab embedded systems."
+  version: "0.1.0"
+  title: "Remote Labs - Control"
+  contact:
+    name: Marcotti
+    url: https://github.com/MarcoMiretti
+  license:
+    name: "GPLv3"
+    url: "https://www.gnu.org/licenses/gpl-3.0.en.html"
+servers:
+  - url: http://192.168.100.41
+tags:
+- name: "propeller"
+  description: "In God we thrust"
+- name: "telemetry"
+  description: "Interface for the websocket-telemetry configuration."
+- name: "logger"
+  description: "Interface for the uart-logging configuration."
+- name: "test"
+  description: "Testing interface."
+paths:
+  /propeller/pwm/status:
+    get:
+      tags:
+      - "propeller"
+      summary: "Returns the PWM status"
+      description: "See if the propeller is either disabled or initialized."
+      responses:
+        "200":
+          description: "The status of the propeller."
+          content:
+            text:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  enum:
+                  - "disabled"
+                  - "initialized"
+                  default: "disabled"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "propeller"
+      summary: "Sets the PWM status"
+      description: "Initialize or deinitialize the propeller's PWM."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Status values"
+        required: true
+        content:
+          text:
+            schema:
+              type: "array"
+              items:
+                type: "string"
+                enum:
+                - "disabled"
+                - "initialized"
+                default: "disabled"
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "500":
+          description: "Failed propeller initialization/deinitialization."
+  /telemetry/period:
+    get:
+      tags:
+      - "telemetry"
+      summary: "Returns the telemetry period."
+      responses:
+        "200":
+          description: "The telemetry period in milliseconds."
+          content:
+            text:
+              schema:
+                type: "number"
+                default: 500
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "telemetry"
+      summary: "Sets the telemetry period."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Telemetry period in milliseconds, between 1 ms and 60000 ms"
+        required: true
+        content:
+          text:
+            schema:
+              type: "number"
+              maximum: 60000
+              minimum: 1
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "403":
+          description: "Period out of range."
+        "500":
+          description: "Internal error."
+  /logger/level:
+    get:
+      tags:
+      - "logger"
+      summary: "Returns the current logging level."
+      responses:
+        "200":
+          description: "The logger level."
+          content:
+            text:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  enum:
+                  - "LOG_TRACE"
+                  - "LOG_DEBUG"
+                  - "LOG_INFO"
+                  - "LOG_WARN"
+                  - "LOG_ERROR"
+                  default: "LOG_WARN"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "logger"
+      summary: "Sets the logging level."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Logging level."
+        required: true
+        content:
+          text:
+            schema:
+              type: "array"
+              items:
+                type: "string"
+                enum:
+                - "LOG_TRACE"
+                - "LOG_DEBUG"
+                - "LOG_INFO"
+                - "LOG_WARN"
+                - "LOG_ERROR"
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "500":
+          description: "Internal error."
+  /test:
+    post:
+      tags:
+      - "test"
+      summary: "Say something via UART."
+      parameters:
+      - name: "say"
+        in: "query"
+        description: "String to say."
+        required: true
+        content:
+          text:
+            schema:
+              type: "string"
+      responses:
+        "200":
+          description: "Success."
+        "400":
+          description: "Wrong parameters."
+  /test/resource:
+    get:
+      tags:
+      - "test"
+      summary: "Returns the value of a dummy resource."
+      responses:
+        "200":
+          description: "The value of dummy resource."
+          content:
+            text:
+              schema:
+                type: "string"
+                default: ""
+        "400":
+          description: "400 Bad Request"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "test"
+      summary: "Sets the value of a dummy resource."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Value of the resource."
+        required: true
+        content:
+          text:
+            schema:
+              type: "string"
+              maxLength: 16
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "500":
+          description: "Internal error."
+  /test/parent_resource:
+    get:
+      tags:
+      - "test"
+      summary: "Returns the value of a child resources."
+      responses:
+        "200":
+          description: "A json with the value of child resources."
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  child_a:
+                    type: string
+                    example: "some_value"
+                  child_b:
+                    type: string
+                    example: "other_value"
+        "400":
+          description: "400 Bad Request"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "test"
+      summary: "Sets the value of a child resources."
+      responses:
+        "501":
+          description: "Not implemented."
+  /test/parent_resource/child_a:
+    get:
+      tags:
+      - "test"
+      summary: "Returns the value of a child_a resource."
+      responses:
+        "200":
+          description: "The value of child_a resource."
+          content:
+            text:
+              schema:
+                type: "string"
+                default: ""
+        "400":
+          description: "400 Bad Request"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "test"
+      summary: "Sets the value of a child_a resource."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Value of the resource."
+        required: true
+        content:
+          text:
+            schema:
+              type: "string"
+              maxLength: 16
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "500":
+          description: "Internal error."
+  /test/parent_resource/child_b:
+    get:
+      tags:
+      - "test"
+      summary: "Returns the value of a child_a resource."
+      responses:
+        "200":
+          description: "The value of child_a resource."
+          content:
+            text:
+              schema:
+                type: "string"
+                default: ""
+        "400":
+          description: "400 Bad Request"
+        "500":
+          description: "500 Internal Error"
+    post:
+      tags:
+      - "test"
+      summary: "Sets the value of a child_a resource."
+      parameters:
+      - name: "value"
+        in: "query"
+        description: "Value of the resource."
+        required: true
+        content:
+          text:
+            schema:
+              type: "string"
+              maxLength: 16
+      responses:
+        "202":
+          description: "Accepted."
+        "400":
+          description: "Wrong parameters."
+        "500":
+          description: "Internal error."
+externalDocs:
+  description: "Find out more about the Remote Control-Lab"
+  url: "https://marcomiretti.gitlab.io/remote-control-lab"
