@@ -20,6 +20,8 @@
 #include <FreeRTOS.h>
 #include <semphr.h>
 #include <task.h>
+#include <tcp.h>
+#include <httpd/httpd.h>
 
 #include <log.h>
 
@@ -39,6 +41,7 @@ simple_json_t actuator_db[1] = {{"duty", 0}};
 
 void update_actuators_task(void *pvParameter) {
     log_trace("task started");
+    struct tcp_pcb *pcb = (struct tcp_pcb *) pvParameter;
 
     uint16_t last_actuator_duty = 0;
 
@@ -69,5 +72,9 @@ void update_actuators_task(void *pvParameter) {
             }
         }
         vTaskDelayUntil(&xLastWakeTime, ACTUATORS_UPDATE_PERIOD_ms / portTICK_PERIOD_MS);
+        if (pcb == NULL || pcb->state != ESTABLISHED) {
+            log_trace("disconected, delete task");
+            vTaskDelete(NULL);
+        }
     }
 }
