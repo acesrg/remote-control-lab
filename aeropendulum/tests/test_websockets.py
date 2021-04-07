@@ -33,3 +33,7 @@ class WebsocketsTestCase(unittest.TestCase):
 
     def test_telemetry_received(self):
         self.loop.run_until_complete(self.a_test_telemetry_received())
+
+    def test_hammer_server_with_connections(self):
+        for i in range(10):
+            self.loop.run_until_complete(self.a_test_telemetry_received())
