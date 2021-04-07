@@ -79,10 +79,20 @@ void websocket_cb(struct tcp_pcb *pcb, uint8_t *data, u16_t data_len, uint8_t mo
 void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
     if (!strcmp(uri, "/stream")) {
         log_info("Request for websocket stream");
-        xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
-        xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
+        BaseType_t rv = xTaskCreate(&send_telemetry_task, "send_telemetry", 512, (void *) pcb, 2, NULL);
+        if (rv == pdPASS) {
+            log_trace("task 'send_telemetry' created");
+        } else {
+            log_error("could not allocate memory for 'send_telemetry' task");
+        }
+
+        rv = xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
+        if (rv == pdPASS) {
+            log_trace("task 'update_actuators' created");
+        } else {
+            log_error("could not allocate memory for 'update_actuators' task");
+        }
     }
-    log_trace("task %s created", uri);
 }
 
 /**
