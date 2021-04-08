@@ -137,7 +137,9 @@ void httpd_task(void *pvParameters) {
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb, (tWsHandler) websocket_cb);
     httpd_init();
 
-    for (;;) {}
+    for (;;) {
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
 }
 
 /**
