@@ -86,7 +86,7 @@ void websocket_open_cb(struct tcp_pcb *pcb, const char *uri) {
             log_error("could not allocate memory for 'send_telemetry' task");
         }
 
-        rv = xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) 1, 2, NULL);
+        rv = xTaskCreate(&update_actuators_task, "update_actuators", 512, (void *) pcb, 2, NULL);
         if (rv == pdPASS) {
             log_trace("task 'update_actuators' created");
         } else {
@@ -137,7 +137,9 @@ void httpd_task(void *pvParameters) {
     websocket_register_callbacks((tWsOpenHandler) websocket_open_cb, (tWsHandler) websocket_cb);
     httpd_init();
 
-    for (;;) {}
+    for (;;) {
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
 }
 
 /**
