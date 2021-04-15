@@ -1,3 +1,6 @@
 [submodule "aeropendulum/esp/lib/log.c"]
 	path = aeropendulum/esp/third_party/log.c
 	url = https://github.com/MarcoMiretti/log.c.git 
+[submodule "experimental/esp/third_party/log.c"]
+	path = experimental/esp/third_party/log.c
+	url = https://github.com/MarcoMiretti/log.c.git

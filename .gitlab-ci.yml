@@ -1,6 +1,4 @@
 variables:
-  CI_ESP_AEROPENDULUM_DIR: aeropendulum/esp
-  CI_AEROPENDULUM_DIR: aeropendulum
   WORK_PATH: /home/esp/esp-open-rtos/examples/project
   FIRMWARE_BIN_DIR: firmware
   WIFI_VARS_PATH: include/private_ssid_config.h
@@ -14,54 +12,115 @@ stages:
   - api-docs
   - docs
 
-code-style:
+# template jobs
+.code-style:
   stage: lint
   before_script:
     - cd $WORK_PATH
-    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
+    - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
     - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
   script:
     - make lint
   tags:
     - fw-build
 
-build-aero:
+.build-device:
   stage: build
   before_script:
+    - ls -la
     - cd $WORK_PATH
-    - cp -r $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/* .
+    - ls -la
+    - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
     - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
   script:
+    - ls -la
     - make
-    - mkdir $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/firmware
-    - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
+    - mkdir $CI_PROJECT_DIR/$DEVICE_ESP_DIR/firmware
+    - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
   tags:
     - fw-build
   artifacts:
     paths:
-    - $CI_PROJECT_DIR/$CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/image.bin
+    - $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
     expire_in: 1 week
 
-flash-aero:
+.flash-device:
   variables:
     ESP_PORT: /dev/ttyUSB0
     BAUD_RATE: 115200
     FW_POSITION: 0x2000
   stage: burn
   script:
-    - esptool.py --port $ESP_PORT --baud $BAUD_RATE write_flash $FW_POSITION $CI_ESP_AEROPENDULUM_DIR/$FIRMWARE_BIN_DIR/*.bin
+    - esptool.py --port $ESP_PORT --baud $BAUD_RATE write_flash $FW_POSITION $DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/*.bin
   tags:
     - fw-burn
-  dependencies:
-    - build-aero
 
-test-aero:
+.test-device:
   stage: test
   script:
-    - python3 -m unittest discover -v -s $CI_AEROPENDULUM_DIR/tests
+    - python3 -m unittest discover -v -s $DEVICE/tests
   tags:
     - testing
 
+.base-device:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - $DEVICE/**/*
+
+.aero:
+  variables:
+    DEVICE: aeropendulum
+    DEVICE_ESP_DIR: aeropendulum/esp
+  extends: .base-device
+
+.experimental:
+  variables:
+    DEVICE: experimental
+    DEVICE_ESP_DIR: experimental/esp
+  extends: .base-device
+
+# device specific jobs
+style-aero:
+  extends:
+    - .aero
+    - .code-style
+
+style-experimental:
+  extends:
+    - .experimental
+    - .code-style
+
+build-aero:
+  extends:
+    - .aero
+    - .build-device
+
+build-experimental:
+  extends:
+    - .experimental
+    - .build-device
+
+flash-aero:
+  extends:
+    - .aero
+    - .flash-device
+  dependencies:
+    - build-aero
+
+flash-experimental:
+  extends:
+    - .experimental
+    - .flash-device
+  dependencies:
+    - build-experimental
+
+test-aero:
+  extends:
+    - .aero
+    - .test-device
+
+# generic jobs
 openapi:
   stage: api-docs
   image: node:latest
