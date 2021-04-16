@@ -56,6 +56,10 @@ void user_init(void) {
     log_set_level(SYSTEM_LOG_LEVEL);
     log_info("SDK version:%s ", sdk_system_get_sdk_version());
 
+    /* turn off LED */
+    gpio_enable(ONBOARD_LED_PIN, GPIO_OUTPUT);
+    gpio_write(ONBOARD_LED_PIN, true);
+
     /* initialize tasks */
     xTaskCreate(&dummy_task, "dummy", 256, NULL, 2, NULL);
 }
