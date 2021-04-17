@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Marco Miretti.
+ * Copyright 2021 ACES.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

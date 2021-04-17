@@ -59,11 +59,18 @@ stages:
   tags:
     - testing
 
-.base-device:
+.base-rules:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - $DEVICE/**/*
+
+.manual-rules:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - $DEVICE/**/*
+      when: manual
     - if: '$CI_COMMIT_BRANCH == "master"'
       when: manual
 
@@ -71,53 +78,58 @@ stages:
   variables:
     DEVICE: aeropendulum
     DEVICE_ESP_DIR: aeropendulum/esp
-  extends: .base-device
+  extends: .base-rules
 
 .experimental:
   variables:
     DEVICE: experimental
     DEVICE_ESP_DIR: experimental/esp
-  extends: .base-device
 
 # device specific jobs
 style-aero:
   extends:
     - .aero
     - .code-style
+  needs: []
 
 style-experimental:
   extends:
     - .experimental
     - .code-style
+    - .base-rules
+  needs: []
 
 build-aero:
   extends:
     - .aero
     - .build-device
+  needs: []
 
 build-experimental:
   extends:
     - .experimental
     - .build-device
+    - .manual-rules
+  needs: []
 
 flash-aero:
   extends:
     - .aero
     - .flash-device
-  dependencies:
-    - build-aero
+  needs: ["build-aero"]
 
 flash-experimental:
   extends:
     - .experimental
     - .flash-device
-  dependencies:
-    - build-experimental
+    - .base-rules
+  needs: ["build-experimental"]
 
 test-aero:
   extends:
     - .aero
     - .test-device
+  needs: ["flash-aero"]
 
 # generic jobs
 openapi:
