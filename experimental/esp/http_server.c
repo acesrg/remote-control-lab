@@ -42,7 +42,7 @@ uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
  */
 void dummy_task(void *pvParameters) {
     for (;;) {
-        log_info("im alive :)");
+        log_info("im alive :D");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
