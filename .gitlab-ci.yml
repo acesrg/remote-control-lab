@@ -27,13 +27,10 @@ stages:
 .build-device:
   stage: build
   before_script:
-    - ls -la
     - cd $WORK_PATH
-    - ls -la
     - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
     - envsubst < $WIFI_VARS_PATH | sponge $WIFI_VARS_PATH
   script:
-    - ls -la
     - make
     - mkdir $CI_PROJECT_DIR/$DEVICE_ESP_DIR/firmware
     - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
@@ -67,6 +64,7 @@ stages:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - $DEVICE/**/*
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
 .aero:
   variables:
