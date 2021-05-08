@@ -16,7 +16,7 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-/** \file http_server.c */
+/** \file main.c */
 /* standard */
 #include <string.h>
 
