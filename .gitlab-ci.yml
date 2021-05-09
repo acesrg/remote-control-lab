@@ -7,7 +7,6 @@ variables:
 stages:
   - lint
   - build
-  - burn
   - test
   - api-docs
   - docs
@@ -15,6 +14,7 @@ stages:
 # template jobs
 .code-style:
   stage: lint
+  image: marcotti/esp-open-rtos
   before_script:
     - cd $WORK_PATH
     - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
@@ -22,10 +22,12 @@ stages:
   script:
     - make lint
   tags:
-    - fw-build
+    - local
+    - amd64
 
 .build-device:
   stage: build
+  image: marcotti/esp-open-rtos
   before_script:
     - cd $WORK_PATH
     - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
@@ -35,51 +37,32 @@ stages:
     - mkdir $CI_PROJECT_DIR/$DEVICE_ESP_DIR/firmware
     - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
   tags:
-    - fw-build
+    - local
+    - amd64
   artifacts:
     paths:
     - $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
     expire_in: 1 week
 
-.flash-device:
+.test-device:
+  image: marcotti/esptool-minimal:latest
   variables:
     ESP_PORT: /dev/ttyUSB0
     BAUD_RATE: 115200
     FW_POSITION: 0x2000
-  stage: burn
-  script:
-    - esptool.py --port $ESP_PORT --baud $BAUD_RATE write_flash $FW_POSITION $DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/*.bin
-  tags:
-    - fw-burn
-
-.test-device:
   stage: test
+  before_script:
+    - esptool.py --port $ESP_PORT --baud $BAUD_RATE write_flash $FW_POSITION $DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/*.bin
+    - pip install websockets
   script:
     - python3 -m unittest discover -v -s $DEVICE/tests
   tags:
-    - testing
-
-.base-rules:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - $DEVICE/**/*
-    - if: '$CI_COMMIT_BRANCH == "master"'
-
-.manual-rules:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      changes:
-        - $DEVICE/**/*
-      when: manual
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
+    - rpi
 
 .aero:
   variables:
     DEVICE: aeropendulum
     DEVICE_ESP_DIR: aeropendulum/esp
-  extends: .base-rules
 
 .experimental:
   variables:
@@ -97,7 +80,6 @@ style-experimental:
   extends:
     - .experimental
     - .code-style
-    - .base-rules
   needs: []
 
 build-aero:
@@ -110,27 +92,19 @@ build-experimental:
   extends:
     - .experimental
     - .build-device
-    - .manual-rules
   needs: []
 
-flash-aero:
-  extends:
-    - .aero
-    - .flash-device
-  needs: ["build-aero"]
-
-flash-experimental:
+test-experimental:
   extends:
     - .experimental
-    - .flash-device
-    - .base-rules
+    - .test-device
   needs: ["build-experimental"]
 
 test-aero:
   extends:
     - .aero
     - .test-device
-  needs: ["flash-aero"]
+  needs: ["build-aero"]
 
 # generic jobs
 openapi:
@@ -153,7 +127,8 @@ pages:
     - doxygen .gci/Doxyfile
     - mv $CI_PROJECT_DIR/public/html/* $CI_PROJECT_DIR/public
   tags:
-    - testing
+    - local
+    - amd64
   artifacts:
     paths:
       - $CI_PROJECT_DIR/public/*
