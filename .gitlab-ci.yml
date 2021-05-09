@@ -14,6 +14,7 @@ stages:
 # template jobs
 .code-style:
   stage: lint
+  image: marcotti/esp-open-rtos
   before_script:
     - cd $WORK_PATH
     - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
@@ -21,10 +22,12 @@ stages:
   script:
     - make lint
   tags:
-    - fw-build
+    - local
+    - amd64
 
 .build-device:
   stage: build
+  image: marcotti/esp-open-rtos
   before_script:
     - cd $WORK_PATH
     - cp -r $CI_PROJECT_DIR/$DEVICE_ESP_DIR/* .
@@ -34,7 +37,8 @@ stages:
     - mkdir $CI_PROJECT_DIR/$DEVICE_ESP_DIR/firmware
     - cp $FIRMWARE_BIN_DIR/* $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
   tags:
-    - fw-build
+    - local
+    - amd64
   artifacts:
     paths:
     - $CI_PROJECT_DIR/$DEVICE_ESP_DIR/$FIRMWARE_BIN_DIR/image.bin
@@ -123,7 +127,8 @@ pages:
     - doxygen .gci/Doxyfile
     - mv $CI_PROJECT_DIR/public/html/* $CI_PROJECT_DIR/public
   tags:
-    - testing
+    - local
+    - amd64
   artifacts:
     paths:
       - $CI_PROJECT_DIR/public/*
