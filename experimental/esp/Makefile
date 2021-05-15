@@ -1,4 +1,4 @@
-PROGRAM=http_server
+PROGRAM=main
 PROGRAM_INC_DIR= ./include ./third_party/log.c/src/
 PROGRAM_SRC_DIR= . ./third_party/log.c/src/
 
