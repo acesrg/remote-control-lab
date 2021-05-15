@@ -47,6 +47,18 @@ void dummy_task(void *pvParameters) {
     }
 }
 
+/**
+ * \brief   adc_read.
+ */
+void adc_read(void *pvParameters) {
+    uint16_t valor_adc;
+    for (;;) {
+        valor_adc = sdk_system_adc_read();
+        log_info("Valor: %d", valor_adc);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
 
 /**
  * \brief Program's entrypoint.
@@ -62,4 +74,5 @@ void user_init(void) {
 
     /* initialize tasks */
     xTaskCreate(&dummy_task, "dummy", 256, NULL, 2, NULL);
+    xTaskCreate(&adc_read, "adc_read", 256, NULL, 2, NULL);
 }
