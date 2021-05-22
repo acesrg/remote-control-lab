@@ -33,22 +33,15 @@
 /* configuration includes */
 #include <pinout_configuration.h>
 
-/*Global variable: esta variable es global para
- comunucarse entre threads*/
+/* Variable Global: esta variable es global para
+ comunucarse entre threads */
 static uint16_t valor_adc;
+
+/* Variable Global: comprendida entre 0 y 1 */
+static float pwm_duty;
 
 uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 
-
-/**
- * \brief   dummy task.
- */
-void dummy_task(void *pvParameters) {
-    for (;;) {
-        log_info("im alive :D");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-}
 
 /**
  * \brief   adc_read.
@@ -56,7 +49,18 @@ void dummy_task(void *pvParameters) {
 void adc_read(void *pvParameters) {
     for (;;) {
         valor_adc = sdk_system_adc_read();
-        log_info("Valor: %d", valor_adc);
+        log_debug("Valor: %d", valor_adc);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
+/**
+ * \brief   uart_publisher.
+ */
+void uart_publisher(void *pvParameters) {
+    for (;;) {
+        printf("{pwm: %f, adc: %d}", pwm_duty, valor_adc);
+        log_debug("finished printing");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
@@ -75,6 +79,6 @@ void user_init(void) {
     gpio_write(ONBOARD_LED_PIN, true);
 
     /* initialize tasks */
-    xTaskCreate(&dummy_task, "dummy", 256, NULL, 2, NULL);
-    xTaskCreate(&adc_read, "adc_read", 256, NULL, 2, NULL);
+    xTaskCreate(&adc_read, "adc read", 256, NULL, 2, NULL);
+    xTaskCreate(&uart_publisher, "uart publisher", 256, NULL, 2, NULL);
 }
