@@ -33,6 +33,9 @@
 /* configuration includes */
 #include <pinout_configuration.h>
 
+/*Global variable: esta variable es global para
+ comunucarse entre threads*/
+static uint16_t valor_adc;
 
 uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 
@@ -43,6 +46,17 @@ uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 void dummy_task(void *pvParameters) {
     for (;;) {
         log_info("im alive :D");
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
+/**
+ * \brief   adc_read.
+ */
+void adc_read(void *pvParameters) {
+    for (;;) {
+        valor_adc = sdk_system_adc_read();
+        log_info("Valor: %d", valor_adc);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
@@ -62,4 +76,5 @@ void user_init(void) {
 
     /* initialize tasks */
     xTaskCreate(&dummy_task, "dummy", 256, NULL, 2, NULL);
+    xTaskCreate(&adc_read, "adc_read", 256, NULL, 2, NULL);
 }
