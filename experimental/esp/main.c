@@ -33,7 +33,7 @@
 /* configuration includes */
 #include <pinout_configuration.h>
 
-/* Global variable: esta variable es global para
+/* Variable Global: esta variable es global para
  comunucarse entre threads */
 static uint16_t valor_adc;
 
@@ -49,7 +49,7 @@ uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 void adc_read(void *pvParameters) {
     for (;;) {
         valor_adc = sdk_system_adc_read();
-        log_info("Valor: %d", valor_adc);
+        log_debug("Valor: %d", valor_adc);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
@@ -60,7 +60,7 @@ void adc_read(void *pvParameters) {
 void uart_publisher(void *pvParameters) {
     for (;;) {
         printf("{pwm: %f, adc: %d}", pwm_duty, valor_adc);
-        log_debug("finish printing");
+        log_debug("finished printing");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
