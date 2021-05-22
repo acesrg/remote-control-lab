@@ -33,6 +33,9 @@
 /* configuration includes */
 #include <pinout_configuration.h>
 
+/*Global variable: esta variable es global para
+ comunucarse entre threads*/
+static uint16_t valor_adc;
 
 uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 
@@ -51,7 +54,6 @@ void dummy_task(void *pvParameters) {
  * \brief   adc_read.
  */
 void adc_read(void *pvParameters) {
-    uint16_t valor_adc;
     for (;;) {
         valor_adc = sdk_system_adc_read();
         log_info("Valor: %d", valor_adc);
