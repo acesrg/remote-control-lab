@@ -26,6 +26,7 @@
 #include <espressif/esp_common.h>
 #include <espressif/user_interface.h>
 #include <esp/uart.h>
+#include <pwm.h>
 
 /* third party local libs */
 #include <log.h>
@@ -39,9 +40,31 @@ static uint16_t valor_adc;
 
 /* Variable Global: comprendida entre 0 y 1 */
 static float pwm_duty;
+uint8_t SYSTEM_LOG_LEVEL = LOG_TRACE;
 
-uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
+/*Asignación de parametros para PWM*/
+#define DEFAULT_DRIVER_PWM_PIN              14      /**< \brief Default driver pin */
+#define DEFAULT_DRIVER_PWM_FREQUENCY_HZ     100     /**< \brief Default PWM frequency */
+#define DRIVER_PWM_COUNT                    1       /**< \brief Quantity of PWMs to use */
+#define DRIVER_PWM_REVERSE                  false   /**< \brief PWM Reverse option */
 
+
+/**
+ * \brief   PWM configuration structure.
+ */
+typedef struct pwm_config_t {
+    uint16_t frequency_hz;  /**< \brief Frequency of the PWM signal in Hertz */
+    uint8_t pin;            /**< \brief Pin where the PWM will be initialized */
+} pwm_config_t;
+
+
+/**
+ * \brief   Global PWM driver configuration.
+ */
+pwm_config_t pwm_config = {
+    .pin = DEFAULT_DRIVER_PWM_PIN,
+    .frequency_hz = DEFAULT_DRIVER_PWM_FREQUENCY_HZ,
+};
 
 /**
  * \brief   adc_read.
@@ -67,6 +90,41 @@ void uart_publisher(void *pvParameters) {
 
 
 /**
+ * \brief   PWM_writer
+ */
+void PWM_writer(void *pvParameters) {
+    
+    log_trace("Set PWM in pin %d", pwm_config.pin);
+    pwm_init(DRIVER_PWM_COUNT, &pwm_config.pin, DRIVER_PWM_REVERSE);
+
+    log_trace("Set PWM frequency to %d Hz", pwm_config.frequency_hz);
+    pwm_set_freq(pwm_config.frequency_hz);
+
+    log_trace("Set PWM default duty");
+    pwm_set_duty(0x0000);
+
+    log_trace("Start PWM");
+    pwm_start();
+    
+     vTaskDelay(2000 / portTICK_PERIOD_MS);
+
+    for (;;) {
+    
+        log_trace("Set PWM default duty");
+        pwm_set_duty(0x7FFF);
+
+        vTaskDelay(1000 / portTICK_PERIOD_MS);   
+        
+        log_trace("Set PWM default duty again");
+        pwm_set_duty(0x0000);
+        
+        vTaskDelay(1000 / portTICK_PERIOD_MS); 
+
+    }
+}
+
+
+/**
  * \brief Program's entrypoint.
  */
 void user_init(void) {
@@ -81,4 +139,6 @@ void user_init(void) {
     /* initialize tasks */
     xTaskCreate(&adc_read, "adc read", 256, NULL, 2, NULL);
     xTaskCreate(&uart_publisher, "uart publisher", 256, NULL, 2, NULL);
+    xTaskCreate(&PWM_writer, "PWM_writer", 256, NULL, 2, NULL);
+
 }
