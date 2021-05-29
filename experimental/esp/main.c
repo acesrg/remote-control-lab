@@ -40,7 +40,7 @@ static uint16_t valor_adc;
 
 /* Variable Global: comprendida entre 0 y 1 */
 static float pwm_duty;
-uint8_t SYSTEM_LOG_LEVEL = LOG_TRACE;
+uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 
 /* Asignación de parametros para PWM */
 #define DEFAULT_DRIVER_PWM_PIN              14      /**< \brief Default driver pin */
