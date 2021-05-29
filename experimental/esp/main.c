@@ -93,6 +93,8 @@ void uart_publisher(void *pvParameters) {
  * \brief   PWM_writer
  */
 void PWM_writer(void *pvParameters) {
+    const uint16_t pwm_duty_off = 0x0000;
+    const uint16_t pwm_duty_max = 0xFFFF;
     log_trace("Set PWM in pin %d", pwm_config.pin);
     pwm_init(DRIVER_PWM_COUNT, &pwm_config.pin, DRIVER_PWM_REVERSE);
 
@@ -100,7 +102,7 @@ void PWM_writer(void *pvParameters) {
     pwm_set_freq(pwm_config.frequency_hz);
 
     log_trace("Set PWM default duty");
-    pwm_set_duty(0x0000);
+    pwm_set_duty(pwm_duty_off);
 
     log_trace("Start PWM");
     pwm_start();
@@ -108,10 +110,10 @@ void PWM_writer(void *pvParameters) {
 
     for (;;) {
         log_trace("Set PWM default duty");
-        pwm_set_duty(0x7FFF);
+        pwm_set_duty((uint16_t) (pwm_duty_max/2));
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         log_trace("Set PWM default duty again");
-        pwm_set_duty(0x0000);
+        pwm_set_duty(pwm_duty_off);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
