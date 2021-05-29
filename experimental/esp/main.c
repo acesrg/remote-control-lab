@@ -42,7 +42,7 @@ static uint16_t valor_adc;
 static float pwm_duty;
 uint8_t SYSTEM_LOG_LEVEL = LOG_TRACE;
 
-/*Asignación de parametros para PWM*/
+/* Asignación de parametros para PWM */
 #define DEFAULT_DRIVER_PWM_PIN              14      /**< \brief Default driver pin */
 #define DEFAULT_DRIVER_PWM_FREQUENCY_HZ     100     /**< \brief Default PWM frequency */
 #define DRIVER_PWM_COUNT                    1       /**< \brief Quantity of PWMs to use */
@@ -93,7 +93,6 @@ void uart_publisher(void *pvParameters) {
  * \brief   PWM_writer
  */
 void PWM_writer(void *pvParameters) {
-    
     log_trace("Set PWM in pin %d", pwm_config.pin);
     pwm_init(DRIVER_PWM_COUNT, &pwm_config.pin, DRIVER_PWM_REVERSE);
 
@@ -105,21 +104,15 @@ void PWM_writer(void *pvParameters) {
 
     log_trace("Start PWM");
     pwm_start();
-    
-     vTaskDelay(2000 / portTICK_PERIOD_MS);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
 
     for (;;) {
-    
         log_trace("Set PWM default duty");
         pwm_set_duty(0x7FFF);
-
-        vTaskDelay(1000 / portTICK_PERIOD_MS);   
-        
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
         log_trace("Set PWM default duty again");
         pwm_set_duty(0x0000);
-        
-        vTaskDelay(1000 / portTICK_PERIOD_MS); 
-
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
@@ -140,5 +133,4 @@ void user_init(void) {
     xTaskCreate(&adc_read, "adc read", 256, NULL, 2, NULL);
     xTaskCreate(&uart_publisher, "uart publisher", 256, NULL, 2, NULL);
     xTaskCreate(&PWM_writer, "PWM_writer", 256, NULL, 2, NULL);
-
 }
