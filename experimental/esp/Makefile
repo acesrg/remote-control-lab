@@ -3,6 +3,7 @@ PROGRAM_INC_DIR= ./include ./third_party/log.c/src/
 PROGRAM_SRC_DIR= . ./third_party/log.c/src/
 
 EXTRA_CFLAGS=-DLOG_USE_COLOR
+EXTRA_COMPONENTS = extras/pwm
 
 LINT_TOOL = cpplint
 LINT_FLAGS = --recursive --quiet
