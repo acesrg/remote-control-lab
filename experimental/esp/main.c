@@ -110,10 +110,12 @@ void PWM_writer(void *pvParameters) {
 
     for (;;) {
         log_trace("Set PWM default duty");
-        pwm_set_duty((uint16_t) (pwm_duty_max/2));
+        pwm_duty = pwm_duty_max/2;
+        pwm_set_duty((uint16_t) (pwm_duty));
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         log_trace("Set PWM default duty again");
-        pwm_set_duty(pwm_duty_off);
+        pwm_duty = pwm_duty_off;
+        pwm_set_duty(pwm_duty);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
