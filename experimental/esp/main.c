@@ -42,6 +42,8 @@ static uint16_t valor_adc;
 static float pwm_duty;
 uint8_t SYSTEM_LOG_LEVEL = LOG_INFO;
 
+
+
 /* Asignación de parametros para PWM */
 #define DEFAULT_DRIVER_PWM_PIN              14      /**< \brief Default driver pin */
 #define DEFAULT_DRIVER_PWM_FREQUENCY_HZ     100     /**< \brief Default PWM frequency */
@@ -82,7 +84,7 @@ void adc_read(void *pvParameters) {
  */
 void uart_publisher(void *pvParameters) {
     for (;;) {
-        printf("{pwm: %f, adc: %d}\n", pwm_duty, valor_adc);
+        printf("{\"pwm\": %f, \"adc\": %d}\n", pwm_duty, valor_adc);
         log_debug("finished printing");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
