@@ -82,7 +82,7 @@ void adc_read(void *pvParameters) {
  */
 void uart_publisher(void *pvParameters) {
     for (;;) {
-        printf("{pwm: %f, adc: %d}\n", pwm_duty, valor_adc);
+        printf("{\"pwm\": %f, \"adc\": %d}\n", pwm_duty, valor_adc);
         log_debug("finished printing");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
