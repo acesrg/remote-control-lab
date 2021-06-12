@@ -83,7 +83,6 @@ void adc_read(void *pvParameters) {
  * \brief   uart_publisher.
  */
 void uart_publisher(void *pvParameters) {
-    const uint8_t marks = '"';
     for (;;) {
         printf("{\"pwm\": %f, \"adc\": %d}\n", pwm_duty, valor_adc);
         log_debug("finished printing");
