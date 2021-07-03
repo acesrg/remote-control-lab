@@ -79,7 +79,7 @@ pwm_config_t pwm_config = {
 void adc_read(void *pvParameters) {
     for (;;) {
         valor_adc = sdk_system_adc_read();
-        adc_voltage=valor_adc*(SYSTEM_VOLTAGE/ADC_RESOLUTION);
+        adc_voltage = valor_adc*(SYSTEM_VOLTAGE/ADC_RESOLUTION);
         log_debug("ADC Voltage: %f", adc_voltage);
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
@@ -90,7 +90,7 @@ void adc_read(void *pvParameters) {
  */
 void uart_publisher(void *pvParameters) {
     for (;;) {
-        pwm_duty_percentage=pwm_duty*(100.0/(PWM_DUTY_MAX-1.0));
+        pwm_duty_percentage = pwm_duty*(100.0/(PWM_DUTY_MAX-1.0));
         printf("{\"pwm\": %f, \"adc\": %f}\n", pwm_duty_percentage, adc_voltage);
         log_debug("finished printing");
         vTaskDelay(10 / portTICK_PERIOD_MS);
