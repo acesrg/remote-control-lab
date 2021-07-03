@@ -92,7 +92,6 @@ void uart_publisher(void *pvParameters) {
     for (;;) {
         pwm_duty_percentage = pwm_duty*(100.0/(PWM_DUTY_MAX-1.0));
         printf("{\"pwm\": %f, \"adc\": %f}\n", pwm_duty_percentage, adc_voltage);
-        log_debug("finished printing");
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
